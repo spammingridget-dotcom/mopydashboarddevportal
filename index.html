@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Portal Login</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: radial-gradient(circle at 50% 20%, #0a0f2a, #03040c);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        .login-box {
+            width: 350px;
+            padding: 30px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 16px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(0,0,0,0.4);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            width: 95%;
+            padding: 12px;
+            background: #1e66ff;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        button:hover {
+            background: #4c82ff;
+        }
+
+        .error {
+            margin-top: 10px;
+            color: #ff7070;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+    <h2>Developer Login</h2>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <div class="error" id="error"></div>
+</div>
+
+<script>
+    const users = {
+        "mopy": "devpass123",
+        "admin": "adminpass",
+        "dev1": "password1",
+        "dev2": "password2"
+    };
+
+    function login() {
+        const u = document.getElementById("username").value;
+        const p = document.getElementById("password").value;
+        const error = document.getElementById("error");
+
+        if (users[u] && users[u] === p) {
+            localStorage.setItem("devUser", u);
+            window.location.href = "dashboard.html";
+        } else {
+            error.innerHTML = "Incorrect username or password.";
+        }
+    }
+</script>
+
+</body>
+</html>
