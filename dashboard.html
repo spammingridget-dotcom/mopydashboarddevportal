@@ -1,202 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dev Dashboard — Mopy Developmentz</title>
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: radial-gradient(circle at 50% 20%, #0a1833, #04070f);
-            color: white;
-            font-family: Arial, sans-serif;
-        }
-
-        .topbar {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255,255,255,0.08);
-            backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .container {
-            padding: 20px;
-        }
-
-        h2 {
-            margin-top: 10px;
-        }
-
-        .task {
-            background: rgba(255,255,255,0.06);
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-
-        input, textarea, select {
-            width: 95%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border: none;
-            outline: none;
-        }
-
-        button {
-            padding: 10px 18px;
-            background: #1e66ff;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            margin-right: 6px;
-        }
-
-        button:hover {
-            background: #4c82ff;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MopyDev — Dashboard</title>
+<style>
+  :root{
+    --card: rgba(8,16,28,0.7);
+    --muted: rgba(255,255,255,0.78);
+    --accent: #4f8cff;
+  }
+  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:linear-gradient(180deg,#030512 0%, #061028 60%);color:#fff;}
+  /* subtle procedural nebula as background */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
+    radial-gradient(600px 300px at 10% 20%, rgba(79,140,255,0.04), transparent 8%),
+    radial-gradient(400px 240px at 85% 80%, rgba(30,102,255,0.02), transparent 10%);mix-blend-mode:screen;opacity:0.95;}
+  header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px;background:transparent;z-index:2;}
+  header h1{margin:0;font-size:18px;}
+  .wrap{display:flex;gap:20px;padding:18px;box-sizing:border-box;height:calc(100vh - 80px);}
+  .col{flex:1;background:var(--card);border-radius:12px;padding:18px;overflow:auto;box-shadow:0 10px 30px rgba(0,0,0,0.5);}
+  .col h3{margin-top:0;color:var(--muted);font-weight:600;}
+  label{display:block;margin:8px 0;font-size:13px;color:rgba(255,255,255,0.86);}
+  input,textarea,select{width:100%;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.02);color:#fff;box-sizing:border-box;margin-bottom:8px;}
+  .small{font-size:13px;color:rgba(255,255,255,0.8);}
+  .task{background:rgba(255,255,255,0.03);padding:12px;border-radius:10px;margin-bottom:10px;}
+  .task .meta{font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:8px;}
+  button{background:linear-gradient(180deg,var(--accent),#1e66ff);border:none;padding:10px 14px;border-radius:9px;color:white;cursor:pointer;margin-right:8px;}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer;}
+  .assign-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+  .chip{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:13px;border:1px solid rgba(255,255,255,0.04);}
+  .finished {color:#7dff91;}
+  footer{position:fixed;left:0;right:0;bottom:8px;text-align:center;font-size:12px;color:rgba(255,255,255,0.32);}
+  /* scroll */
+  .col::-webkit-scrollbar{width:8px} .col::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.03);border-radius:8px}
+</style>
 </head>
 <body>
 
-    <div class="topbar">
-        <div id="welcome"></div>
-        <button onclick="logout()">Logout</button>
-    </div>
+<header>
+  <h1>Mopy Developmentz — Team Dashboard</h1>
+  <div id="hdrRight" class="small"></div>
+</header>
 
-    <div class="container">
+<div class="wrap">
+  <div class="col" style="max-width:420px;">
+    <h3>Create / Manage Tasks</h3>
 
-        <h2>Your Tasks</h2>
-        <div id="taskList"></div>
+    <div id="createArea"></div>
 
-        <h2>Create Task</h2>
+    <hr style="border:none;height:1px;background:rgba(255,255,255,0.03);margin:14px 0;">
+    <div class="small">Rules:</div>
+    <ul style="color:rgba(255,255,255,0.7);font-size:13px;">
+      <li>Mopy = full control (create, edit, assign to multiple users).</li>
+      <li>Others can create up to <strong>3 tasks per week</strong> (they are auto-assigned to themselves).</li>
+      <li>Shared tasks require all assigned users to click their personal <em>Finish</em>.</li>
+    </ul>
+  </div>
 
-        <div id="limitMessage" style="color:#ff6b6b; margin-bottom:10px;"></div>
+  <div class="col">
+    <h3>Open Tasks</h3>
+    <div id="tasksList"></div>
+  </div>
+</div>
 
-        <input id="title" placeholder="Task title">
-        <textarea id="desc" placeholder="Task description"></textarea>
+<footer>Local demo storage (localStorage) — not encrypted. Move to backend for production.</footer>
 
-        <label>Assign to:</label>
-        <select id="assignee"></select>
+<script>
+/* ---------- CONFIG & initial user data ---------- */
+const currentUser = localStorage.getItem('dev_user') || null;
+if(!currentUser){ alert('Not logged in — redirecting to login.'); location.href='login.html'; }
 
-        <button onclick="createTask()">Create Task</button>
-    </div>
+const ALL_USERS = ["mopy","astral_void","Etern","CX","St3amyEggroll"];
+const ADMIN_USER = "mopy";
 
-    <script>
-        let user = localStorage.getItem("loggedUser");
-        if (!user) window.location.href = "index.html";
+/* task structure:
+  {
+    id: "t_ts",
+    title: "...",
+    desc: "...",
+    creator: "user",
+    assignees: ["u1","u2"],
+    finishedBy: { "u1": true/false, "u2": true/false },
+    createdAt: epoch,
+    week: YWW (year-week),
+    archived: false
+  }
+*/
 
-        document.getElementById("welcome").innerText = "Logged in as: " + user;
+/* ---------- storage helpers ---------- */
+function loadTasks(){ return JSON.parse(localStorage.getItem('mopy_tasks_v1')||'[]'); }
+function saveTasks(tasks){ localStorage.setItem('mopy_tasks_v1', JSON.stringify(tasks)); }
 
-        const allUsers = ["mopy", "astral_void", "Etern", "CX", "St3amyEggroll"];
+/* get cur week tag */
+Date.prototype.getWeekNumber = function(){
+  const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return d.getUTCFullYear()*100 + Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+};
+function currentWeek(){ return new Date().getWeekNumber(); }
 
-        const isAdmin = user === "mopy";
+/* ---------- UI: create area ---------- */
+const createArea = document.getElementById('createArea');
+function renderCreateArea(){
+  // if admin:
+  if(currentUser === ADMIN_USER){
+    createArea.innerHTML = `
+      <label>Title</label>
+      <input id="t_title" placeholder="Task title">
+      <label>Description</label>
+      <textarea id="t_desc" rows="3" placeholder="Short description"></textarea>
+      <label>Assign to (ctrl/cmd + click to select multiple)</label>
+      <select id="t_assignees" multiple size="5">${ALL_USERS.map(u=>`<option value="${u}">${u}</option>`).join('')}</select>
+      <div style="margin-top:8px">
+        <button onclick="handleCreate(true)">Create & Assign</button>
+        <button class="btn-ghost" onclick="showAllTasks()">Refresh</button>
+      </div>
+    `;
+  } else {
+    // non-admin: simple self-assign create
+    createArea.innerHTML = `
+      <label>Title</label>
+      <input id="t_title" placeholder="Task title">
+      <label>Description</label>
+      <textarea id="t_desc" rows="3" placeholder="Short description"></textarea>
+      <div style="margin-top:8px">
+        <button onclick="handleCreate(false)">Create (assigned to you)</button>
+        <button class="btn-ghost" onclick="showAllTasks()">Refresh</button>
+      </div>
+      <div class="small" style="margin-top:8px;color:rgba(255,255,255,0.65)">
+        Note: non-admins can create up to <strong>3 tasks per week</strong>.
+      </div>
+    `;
+  }
+}
 
-        const assigneeSelect = document.getElementById("assignee");
-        allUsers.forEach(u => {
-            let op = document.createElement("option");
-            op.value = u;
-            op.textContent = u;
-            assigneeSelect.appendChild(op);
-        });
+/* ---------- creation logic ---------- */
+function handleCreate(isAdmin){
+  const title = document.getElementById('t_title').value.trim();
+  const desc = document.getElementById('t_desc').value.trim();
+  if(!title){ alert('Add a title'); return; }
 
-        function getTasks() {
-            return JSON.parse(localStorage.getItem("tasks") || "[]");
-        }
+  const tasks = loadTasks();
+  const week = currentWeek();
 
-        function saveTasks(tasks) {
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-        }
+  if(!isAdmin){
+    const ownCount = tasks.filter(t => t.creator===currentUser && t.week===week).length;
+    if(ownCount >= 3){ alert('You reached the 3-tasks-per-week limit.'); return; }
+  }
 
-        function tasksThisWeek(username) {
-            const week = new Date().getWeekNumber();
-            return getTasks().filter(t => t.creator === username && t.week === week).length;
-        }
+  let assignees = [];
+  if(isAdmin){
+    const select = document.getElementById('t_assignees');
+    assignees = Array.from(select.selectedOptions).map(o=>o.value);
+    if(assignees.length === 0){ alert('Select at least one assignee.'); return; }
+  } else {
+    assignees = [currentUser];
+  }
 
-        Date.prototype.getWeekNumber = function(){
-            const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-            const dayNum = d.getUTCDay() || 7;
-            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-            return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
-        };
+  // create task
+  const id = 't_' + Date.now();
+  const finishedBy = {};
+  assignees.forEach(a => finishedBy[a] = false);
 
-        function loadTasks() {
-            let tasks = getTasks();
-            let html = "";
-            tasks.forEach((t, i) => {
-                if (t.assignee !== user && !isAdmin) return;
+  const task = { id, title, desc, creator: currentUser, assignees, finishedBy, createdAt: Date.now(), week, archived:false };
+  tasks.unshift(task);
+  saveTasks(tasks);
+  document.getElementById('t_title').value=''; document.getElementById('t_desc').value='';
+  if(isAdmin) document.getElementById('t_assignees').selectedIndex = -1;
+  showAllTasks();
+}
 
-                html += `
-                    <div class="task">
-                        <b>${t.title}</b> — assigned to ${t.assignee}<br>
-                        <i>${t.desc}</i><br><br>
+/* ---------- render tasks ---------- */
+function showAllTasks(){
+  const tasks = loadTasks();
+  const container = document.getElementById('tasksList');
+  if(tasks.length===0){ container.innerHTML = '<div class="small">No tasks yet.</div>'; return; }
 
-                        ${t.finished ? "<span style='color:#7dff91'>✔ Finished</span>" :
-                        `<button onclick="finishTask(${i})">Finish</button>`}
+  container.innerHTML = tasks.map((t, idx) => {
+    // progress and UI for each assignee (Option 1: show list with checkboxes)
+    const total = t.assignees.length;
+    const doneCount = t.assignees.reduce((s,a)=> s + (t.finishedBy[a] ? 1:0), 0);
+    const doneBadge = doneCount === total ? `<span class="finished">✓ Completed</span>` : `<span>${doneCount} / ${total} finished</span>`;
 
-                        ${isAdmin ? `<button onclick="deleteTask(${i})">Delete</button>` : ""}
-                    </div>
-                `;
-            });
-            document.getElementById("taskList").innerHTML = html;
-        }
+    // show who created
+    const creator = t.creator;
 
-        function createTask() {
-            const title = document.getElementById("title").value;
-            const desc = document.getElementById("desc").value;
-            const assignee = document.getElementById("assignee").value;
+    // whether current user can toggle their finished state
+    const canToggle = t.assignees.includes(currentUser);
 
-            if (!title || !desc) return alert("Fill all fields.");
+    // admin controls
+    const adminControls = (currentUser === ADMIN_USER) ? `
+      <button onclick="editTask('${t.id}')">Edit</button>
+      <button onclick="deleteTask('${t.id}')">Delete</button>
+    ` : '';
 
-            const week = new Date().getWeekNumber();
+    // per-assignee list with checkbox status visible
+    const assigneeListHtml = t.assignees.map(a => {
+      const checked = t.finishedBy[a] ? 'checked' : '';
+      const disabled = (a !== currentUser && currentUser !== ADMIN_USER) ? 'disabled' : ''; // only each user or admin can toggle
+      // admin can toggle any checkbox (mopy can mark on behalf)
+      return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                <input type="checkbox" ${checked} ${disabled} onchange="toggleFinished('${t.id}','${a}',this.checked)">
+                <div class="chip">${a}</div>
+              </div>`;
+    }).join('');
 
-            if (!isAdmin && tasksThisWeek(user) >= 3) {
-                document.getElementById("limitMessage").innerText =
-                    "You reached your limit of 3 tasks this week.";
-                return;
-            }
+    return `<div class="task" id="${t.id}">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <strong>${escapeHtml(t.title)}</strong><div class="meta">by ${creator} • ${new Date(t.createdAt).toLocaleString()}</div>
+        </div>
+        <div>${doneBadge}</div>
+      </div>
+      <div style="margin-top:8px;color:rgba(255,255,255,0.9)">${escapeHtml(t.desc || '')}</div>
 
-            let tasks = getTasks();
-            tasks.push({
-                title,
-                desc,
-                creator: user,
-                assignee,
-                week,
-                finished: false
-            });
-            saveTasks(tasks);
-            loadTasks();
-        }
+      <div style="margin-top:12px">
+        <div style="font-size:13px;color:rgba(255,255,255,0.85);margin-bottom:6px">Assigned:</div>
+        ${assigneeListHtml}
+      </div>
 
-        function finishTask(i) {
-            let tasks = getTasks();
-            tasks[i].finished = true;
-            saveTasks(tasks);
-            loadTasks();
-        }
+      <div style="margin-top:10px">
+        ${canToggle && !isTaskFullyFinished(t) ? `<button onclick="markMyFinish('${t.id}')">I'm Done</button>` : ''}
+        ${adminControls}
+      </div>
+    </div>`;
+  }).join('');
+}
 
-        function deleteTask(i) {
-            let tasks = getTasks();
-            tasks.splice(i, 1);
-            saveTasks(tasks);
-            loadTasks();
-        }
+/* helper to escape HTML */
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-        function logout() {
-            localStorage.removeItem("loggedUser");
-            window.location.href = "index.html";
-        }
+/* ---------- toggle / finish logic ---------- */
+function isTaskFullyFinished(task){
+  return task.assignees.every(a => task.finishedBy[a]);
+}
 
-        loadTasks();
-    </script>
+function toggleFinished(taskId, userName, checked){
+  let tasks = loadTasks();
+  const t = tasks.find(x => x.id === taskId);
+  if(!t) return;
+  // only allow change if currentUser === userName or currentUser === ADMIN (mopy)
+  if(currentUser !== userName && currentUser !== ADMIN_USER){ alert('You cannot change others progress.'); showAllTasks(); return; }
+  t.finishedBy[userName] = !!checked;
+  // if all finished, mark completed (leave object for history)
+  if(isTaskFullyFinished(t)){ /* leave as-is; UI shows completed */ }
+  saveTasks(tasks); showAllTasks();
+}
 
+function markMyFinish(taskId){
+  toggleFinished(taskId, currentUser, true);
+}
+
+/* ---------- edit/delete (admin only) ---------- */
+function editTask(id){
+  if(currentUser !== ADMIN_USER) return;
+  const tasks = loadTasks();
+  const t = tasks.find(x=>x.id===id);
+  if(!t) return;
+  const newTitle = prompt('Edit title', t.title);
+  if(newTitle === null) return;
+  const newDesc = prompt('Edit description', t.desc || '');
+  if(newDesc === null) return;
+  // reassign option: admin may reassign list
+  const newAssignees = prompt('Assign users (comma separated usernames)', t.assignees.join(','));
+  if(newAssignees === null) return;
+  const arr = newAssignees.split(',').map(s=>s.trim()).filter(Boolean);
+  if(arr.length===0){ alert('Need at least one assignee.'); return; }
+  // rebuild finishedBy map for new assignees, preserving any existing finished flags where names match
+  const finishedBy = {};
+  arr.forEach(a => finishedBy[a] = (t.finishedBy[a] === true));
+  t.title = newTitle; t.desc = newDesc; t.assignees = arr; t.finishedBy = finishedBy;
+  saveTasks(tasks); showAllTasks();
+}
+
+function deleteTask(id){
+  if(currentUser !== ADMIN_USER) return;
+  if(!confirm('Delete task?')) return;
+  let tasks = loadTasks();
+  tasks = tasks.filter(x=>x.id!==id);
+  saveTasks(tasks); showAllTasks();
+}
+
+/* ---------- utility: weekly count (for non-admins) ---------- */
+function tasksCreatedThisWeekBy(user){
+  const tasks = loadTasks();
+  const week = currentWeek();
+  return tasks.filter(t => t.creator === user && t.week === week).length;
+}
+
+/* ---------- initial rendering ---------- */
+document.getElementById('hdrRight').innerText = `Logged in: ${currentUser}${currentUser===ADMIN_USER ? ' (admin)' : ''}`;
+renderCreateArea();
+showAllTasks();
+
+/* auto-refresh occasionally */
+setInterval(showAllTasks, 60000);
+</script>
 </body>
 </html>
