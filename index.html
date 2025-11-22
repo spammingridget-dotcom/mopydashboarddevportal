@@ -3,96 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mopy Devpanel — Login</title>
+    <title>Mopy Dev Portal</title>
 
     <style>
-        /* PAGE RESET */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
+            margin: 0;
             height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: "Inter", sans-serif;
             color: white;
             display: flex;
-            justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #090015, #13002e, #210045);
-            background-size: 300% 300%;
-            animation: bgShift 18s ease infinite;
-        }
-
-        /* Soft moving galaxy colors */
-        @keyframes bgShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* BLUR PANEL */
-        .panel {
-            width: 380px;
-            padding: 35px;
-            background: rgba(255, 255, 255, 0.07);
-            backdrop-filter: blur(10px);
-            border-radius: 18px;
-            box-shadow: 0 0 40px rgba(0,0,0,0.4);
+            justify-content: center;
             text-align: center;
-            animation: float 6s ease-in-out infinite;
+            background: radial-gradient(circle at 50% 20%, #081122, #000000 80%);
+            overflow: hidden;
         }
 
+        .stars {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: fall 8s linear infinite;
+            opacity: 0.8;
+        }
+        @keyframes fall {
+            from { transform: translateY(-10vh); }
+            to { transform: translateY(110vh); }
+        }
+
+        .box {
+            padding: 40px 60px;
+            background: rgba(255,255,255,0.07);
+            border-radius: 18px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 45px rgba(0,0,0,0.6);
+            animation: float 5s ease-in-out infinite;
+        }
         @keyframes float {
-            0%,100% { transform: translateY(0px) }
-            50% { transform: translateY(-12px) }
+            0%,100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
         }
 
         h1 {
-            font-size: 2.1rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 25px rgba(255,255,255,0.3);
-        }
-
-        p {
-            opacity: 0.8;
-            margin-bottom: 20px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.15);
-            color: white;
-            font-size: 1rem;
-            outline: none;
+            font-size: 3rem;
+            text-shadow: 0 0 30px rgba(255,255,255,0.3);
         }
 
         .btn {
+            display: inline-block;
             margin-top: 20px;
-            width: 100%;
-            padding: 14px;
+            padding: 14px 28px;
+            border-radius: 14px;
             background: #1e66ff;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
             color: white;
-            cursor: pointer;
-            transition: 0.25s;
-            box-shadow: 0 0 20px rgba(30,102,255,0.4);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.2rem;
+            box-shadow: 0 0 25px rgba(30,102,255,0.5);
+            transition: .2s;
         }
-
         .btn:hover {
             background: #4c82ff;
-            box-shadow: 0 0 28px rgba(76,130,255,0.55);
+            box-shadow: 0 0 35px rgba(76,130,255,0.8);
         }
+    </style>
+</head>
 
-        .footer {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
+<body>
+
+<script>
+function stars(n){
+    for(let i=0;i<n;i++){
+        let s=document.createElement("div");
+        s.className="stars";
+        s.style.left=Math.random()*100+"vw";
+        s.style.top=Math.random()*100+"vh";
+        s.style.opacity=Math.random();
+        document.body.appendChild(s);
+    }
+}
+stars(120);
+</script>
+
+<div class="box">
+    <h1>Mopy Developmentz™ Portal</h1>
+    <a href="login.html" class="btn">Enter Dashboard</a>
+</div>
+
+</body>
+</html>
