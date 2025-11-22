@@ -1,128 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mopy Dev Login</title>
-
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            font-family: "Inter", sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at 50% 20%, #081122, #000000 80%);
-            color: white;
-            overflow: hidden;
-        }
-
-        .stars {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: fall 8s linear infinite;
-            opacity: 0.75;
-        }
-        @keyframes fall {
-            from { transform: translateY(-10vh); }
-            to { transform: translateY(110vh); }
-        }
-
-        .login-box {
-            width: 350px;
-            padding: 40px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 40px rgba(0,0,0,0.6);
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            background: #1e66ff;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
-            box-shadow: 0 0 25px rgba(30,102,255,0.5);
-            cursor: pointer;
-            transition: .25s;
-        }
-
-        button:hover {
-            background: #4c82ff;
-            box-shadow: 0 0 35px rgba(76,130,255,0.7);
-        }
-
-        .error {
-            color: #ff8080;
-            margin-top: 8px;
-            text-align: center;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mopy Developmentz — Login</title>
+<style>
+  :root{--panel:rgba(255,255,255,0.06);--accent:#4f8cff;--accent-2:#1e66ff}
+  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:linear-gradient(180deg,#030419, #06122a);color:white;display:flex;align-items:center;justify-content:center;}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(600px 260px at 12% 20%, rgba(79,140,255,0.05), transparent 12%), radial-gradient(450px 220px at 82% 72%, rgba(100,60,150,0.03), transparent 12%);mix-blend-mode:screen;}
+  .wrap{width:380px;max-width:92vw;padding:28px;border-radius:12px;background:var(--panel);backdrop-filter:blur(8px);box-shadow:0 14px 40px rgba(0,0,0,0.6);text-align:center}
+  h2{margin:0 0 6px 0}
+  input{width:100%;padding:12px;border-radius:10px;border:none;margin-top:12px;background:rgba(255,255,255,0.03);color:white}
+  button{margin-top:14px;width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(180deg,var(--accent),var(--accent-2));color:white;font-weight:700;cursor:pointer}
+  .err{color:#ff8080;margin-top:10px;min-height:18px}
+  small{display:block;margin-top:10px;opacity:0.8}
+</style>
 </head>
-
 <body>
 
-<script>
-function stars(n){
-    for(let i=0;i<n;i++){
-        let s=document.createElement("div");
-        s.className="stars";
-        s.style.left=Math.random()*100+"vw";
-        s.style.top=Math.random()*100+"vh";
-        s.style.opacity=Math.random();
-        document.body.appendChild(s);
-    }
-}
-stars(120);
+<div class="wrap" role="form" aria-labelledby="h">
+  <h2 id="h">Developer Login</h2>
 
-// USERS
-const users = {
-    "mopy": "mopy565329",
-    "astral_void": "ketchup_W1tHw@w",
-    "Etern": "w1thD43th@",
-    "CX": "#Mus1c1sSPOTIFY",
-    "St3amyEggroll": "eggwh1teEVERYWHERE{}"
-};
+  <input id="username" placeholder="Username" autocomplete="username" />
+  <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+  <button id="loginBtn">Sign in</button>
 
-function login(){
-    let u=document.getElementById("user").value.trim();
-    let p=document.getElementById("pass").value.trim();
-    let err=document.getElementById("error");
-
-    if(users[u] && users[u]===p){
-        localStorage.setItem("user",u);
-        window.location.href="dashboard.html";
-    } else {
-        err.textContent="Invalid username or password.";
-    }
-}
-</script>
-
-<div class="login-box">
-    <h2>Developer Login</h2>
-    <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <div class="error" id="error"></div>
+  <div class="err" id="err" aria-live="polite"></div>
+  <small>If you have issues, contact Mopy_UGC on Discord.</small>
 </div>
 
+<script>
+/*
+  For this demo we perform client-side hashed check (B option).
+  Plain passwords provided earlier are used to compute hashes locally,
+  then we compare hashes — still client-only (not secure), but avoids plaintext checks in logs.
+*/
+
+/* Plain password map (kept in code for demo only) */
+const PLAIN = {
+  "mopy": "mopy565329",
+  "astral_void": "ketchup_W1tHw@w",
+  "Etern": "w1thD43th@",
+  "CX": "#Mus1c1sSPOTIFY",
+  "St3amyEggroll": "eggwh1teEVERYWHERE{}"
+};
+
+async function sha256hex(s){
+  const buf = new TextEncoder().encode(s);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+/* Precompute hashed values of stored plain (so we avoid storing plain in a visible place later) */
+const HASHED = {};
+(async ()=>{
+  for(const k of Object.keys(PLAIN)){
+    HASHED[k] = await sha256hex(PLAIN[k]);
+  }
+})();
+
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value;
+  const err = document.getElementById('err');
+
+  if(!u || !p){ err.textContent = 'Fill both fields.'; return; }
+
+  if(!(u in HASHED)){ err.textContent = 'Unknown user.'; return; }
+
+  const entered = await sha256hex(p);
+  if(entered === HASHED[u]){
+    // success
+    localStorage.setItem('dev_user', u);
+    location.href = 'dashboard.html';
+  } else {
+    err.textContent = 'Invalid password.';
+  }
+});
+</script>
 </body>
 </html>
