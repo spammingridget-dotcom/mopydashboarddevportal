@@ -3,134 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Developer Dashboard</title>
+    <title>Dev Dashboard — Mopy Developmentz</title>
 
     <style>
         body {
             margin: 0;
-            background: linear-gradient(135deg, #060b19, #03040c);
-            font-family: Arial, sans-serif;
+            padding: 0;
+            background: radial-gradient(circle at 50% 20%, #0a1833, #04070f);
             color: white;
-            overflow-x: hidden;
+            font-family: Arial, sans-serif;
         }
 
-        header {
-            padding: 20px;
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(10px);
+        .topbar {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(8px);
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
-        #boards {
-            display: flex;
-            gap: 20px;
+        .container {
             padding: 20px;
         }
 
-        .column {
-            flex: 1;
-            padding: 15px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            backdrop-filter: blur(6px);
-            min-height: 500px;
-        }
-
-        .column h2 {
-            text-align: center;
-            margin-top: 0;
+        h2 {
+            margin-top: 10px;
         }
 
         .task {
-            background: rgba(255,255,255,0.08);
-            padding: 12px;
-            border-radius: 8px;
-            margin: 10px 0;
-            cursor: grab;
+            background: rgba(255,255,255,0.06);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
         }
 
-        #logout {
-            background: #ff4444;
-            border: none;
-            padding: 10px 16px;
+        input, textarea, select {
+            width: 95%;
+            padding: 10px;
+            margin: 8px 0;
             border-radius: 8px;
-            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 18px;
+            background: #1e66ff;
+            border: none;
+            border-radius: 10px;
             color: white;
-            font-weight: bold;
+            cursor: pointer;
+            margin-right: 6px;
+        }
+
+        button:hover {
+            background: #4c82ff;
         }
     </style>
 </head>
-
 <body>
 
-<header>
-    <div id="welcome">Welcome Developer</div>
-    <button id="logout" onclick="logout()">Logout</button>
-</header>
-
-<div id="boards">
-
-    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-col="todo">
-        <h2>To Do</h2>
+    <div class="topbar">
+        <div id="welcome"></div>
+        <button onclick="logout()">Logout</button>
     </div>
 
-    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-col="work">
-        <h2>In Progress</h2>
+    <div class="container">
+
+        <h2>Your Tasks</h2>
+        <div id="taskList"></div>
+
+        <h2>Create Task</h2>
+
+        <div id="limitMessage" style="color:#ff6b6b; margin-bottom:10px;"></div>
+
+        <input id="title" placeholder="Task title">
+        <textarea id="desc" placeholder="Task description"></textarea>
+
+        <label>Assign to:</label>
+        <select id="assignee"></select>
+
+        <button onclick="createTask()">Create Task</button>
     </div>
 
-    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-col="done">
-        <h2>Completed</h2>
-    </div>
+    <script>
+        let user = localStorage.getItem("loggedUser");
+        if (!user) window.location.href = "index.html";
 
-</div>
+        document.getElementById("welcome").innerText = "Logged in as: " + user;
 
-<script>
-    if (!localStorage.getItem("devUser")) {
-        window.location.href = "index.html";
-    }
+        const allUsers = ["mopy", "astral_void", "Etern", "CX", "St3amyEggroll"];
 
-    document.getElementById("welcome").textContent =
-        "Welcome, " + localStorage.getItem("devUser");
+        const isAdmin = user === "mopy";
 
-    const sampleTasks = [
-        { id: "t1", text: "Fix UI Bugs", col: "todo" },
-        { id: "t2", text: "Create Login System", col: "work" },
-        { id: "t3", text: "Optimize Database", col: "done" },
-    ];
+        const assigneeSelect = document.getElementById("assignee");
+        allUsers.forEach(u => {
+            let op = document.createElement("option");
+            op.value = u;
+            op.textContent = u;
+            assigneeSelect.appendChild(op);
+        });
 
-    sampleTasks.forEach(t => createTask(t));
+        function getTasks() {
+            return JSON.parse(localStorage.getItem("tasks") || "[]");
+        }
 
-    function createTask(task) {
-        const div = document.createElement("div");
-        div.className = "task";
-        div.id = task.id;
-        div.draggable = true;
-        div.ondragstart = drag;
-        div.innerText = task.text;
+        function saveTasks(tasks) {
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
 
-        document.querySelector(`[data-col="${task.col}"]`).appendChild(div);
-    }
+        function tasksThisWeek(username) {
+            const week = new Date().getWeekNumber();
+            return getTasks().filter(t => t.creator === username && t.week === week).length;
+        }
 
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
+        Date.prototype.getWeekNumber = function(){
+            const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+            const dayNum = d.getUTCDay() || 7;
+            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+        };
 
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-    }
+        function loadTasks() {
+            let tasks = getTasks();
+            let html = "";
+            tasks.forEach((t, i) => {
+                if (t.assignee !== user && !isAdmin) return;
 
-    function drop(ev) {
-        ev.preventDefault();
-        const data = ev.dataTransfer.getData("text");
-        ev.target.closest(".column").appendChild(document.getElementById(data));
-    }
+                html += `
+                    <div class="task">
+                        <b>${t.title}</b> — assigned to ${t.assignee}<br>
+                        <i>${t.desc}</i><br><br>
 
-    function logout() {
-        localStorage.removeItem("devUser");
-        window.location.href = "index.html";
-    }
-</script>
+                        ${t.finished ? "<span style='color:#7dff91'>✔ Finished</span>" :
+                        `<button onclick="finishTask(${i})">Finish</button>`}
+
+                        ${isAdmin ? `<button onclick="deleteTask(${i})">Delete</button>` : ""}
+                    </div>
+                `;
+            });
+            document.getElementById("taskList").innerHTML = html;
+        }
+
+        function createTask() {
+            const title = document.getElementById("title").value;
+            const desc = document.getElementById("desc").value;
+            const assignee = document.getElementById("assignee").value;
+
+            if (!title || !desc) return alert("Fill all fields.");
+
+            const week = new Date().getWeekNumber();
+
+            if (!isAdmin && tasksThisWeek(user) >= 3) {
+                document.getElementById("limitMessage").innerText =
+                    "You reached your limit of 3 tasks this week.";
+                return;
+            }
+
+            let tasks = getTasks();
+            tasks.push({
+                title,
+                desc,
+                creator: user,
+                assignee,
+                week,
+                finished: false
+            });
+            saveTasks(tasks);
+            loadTasks();
+        }
+
+        function finishTask(i) {
+            let tasks = getTasks();
+            tasks[i].finished = true;
+            saveTasks(tasks);
+            loadTasks();
+        }
+
+        function deleteTask(i) {
+            let tasks = getTasks();
+            tasks.splice(i, 1);
+            saveTasks(tasks);
+            loadTasks();
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedUser");
+            window.location.href = "index.html";
+        }
+
+        loadTasks();
+    </script>
 
 </body>
 </html>
