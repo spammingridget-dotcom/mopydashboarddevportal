@@ -1,23 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login</title>
-  <link rel="stylesheet" href="style.css">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="style.css">
 
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js"></script>
+    <!-- bcrypt.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.js"></script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
-<body>
+<body class="space-bg">
 
-<div class="center-box">
-  <h2>🔐 Login</h2>
-  <p>Enter your email for a magic link</p>
+<div class="login-box">
+    <h1>🚀 Task Manager Login</h1>
 
-  <input id="email" type="email" placeholder="Email" />
-  <button onclick="login()">Send Login Link</button>
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="login()">Log In</button>
+
+    <p id="error" style="color:#ff5555;margin-top:10px;"></p>
 </div>
+
+<script>
+const supabase = supabase.createClient(
+    "https://lzsopkzlifwjdhtxtrkt.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6c29wa3psaWZ3amRodHh0cmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4MjIzNzMsImV4cCI6MjA3OTM5ODM3M30.owsfr2JR_a5DH76TMvh1JX4atPGznmZz1ikQ60nwT8k"
+);
+
+async function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value;
+
+    const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("username", user)
+        .single();
+
+    if (error || !data) {
+        document.getElementById("error").innerText = "User not found.";
+        return;
+    }
+
+    const match = await bcrypt.compare(pass, data.password_hash);
+
+    if (!match) {
+        document.getElementById("error").innerText = "Incorrect password.";
+        return;
+    }
+
+    // Save session
+    localStorage.setItem("user", JSON.stringify({
+        id: data.id,
+        username: data.username,
+        role: data.role
+    }));
+
+    window.location.href = "dashboard.html";
+}
+</script>
 
 </body>
 </html>
