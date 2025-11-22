@@ -1,69 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Mopy Developmentz — Portal</title>
-<style>
-  :root{
-    --panel: rgba(255,255,255,0.06);
-    --accent: #4f8cff;
-    --accent-2: #1e66ff;
-    --muted: rgba(255,255,255,0.84);
-  }
-  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:linear-gradient(180deg,#04061a 0%, #071428 60%);color:white;display:flex;align-items:center;justify-content:center;}
-  /* soft nebula layers */
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;
-    background:
-      radial-gradient(500px 260px at 12% 20%, rgba(79,140,255,0.06), transparent 12%),
-      radial-gradient(600px 320px at 84% 72%, rgba(100,60,150,0.04), transparent 12%);
-    mix-blend-mode:screen;opacity:0.95;
-  }
-  /* subtle planet */
-  .planet {
-    position:absolute;right:8%;top:8%;width:160px;height:160px;border-radius:50%;
-    background: radial-gradient(circle at 30% 30%, #ffcf8b, #d47f34 40%, #5a2a82 85%);
-    filter: blur(6px) saturate(0.9);opacity:0.12;pointer-events:none;
-  }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mopy Developmentz</title>
 
-  .card{width:420px;max-width:92vw;padding:30px;border-radius:14px;background:var(--panel);backdrop-filter:blur(8px);box-shadow:0 12px 40px rgba(0,0,0,0.6);text-align:center;}
-  h1{font-size:26px;margin:0 0 6px 0;letter-spacing:0.4px}
-  p{margin:0 0 18px 0;opacity:0.95}
-  .cta{display:inline-block;padding:12px 20px;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent-2));color:white;font-weight:700;text-decoration:none;box-shadow:0 10px 30px rgba(30,102,255,0.18)}
-  .cta:hover{transform:translateY(-3px);transition:all .17s ease}
-  small{display:block;margin-top:14px;color:rgba(255,255,255,0.6)}
-  /* small procedural stars */
-  .star{position:fixed;border-radius:50%;background:white;opacity:0.85;filter:blur(.3px)}
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, Arial, sans-serif;
+  background: radial-gradient(circle at 20% 20%, #1b2346, #05060f 70%);
+  overflow-x: hidden;
+  color: white;
+  text-align: center;
+}
+
+/* Floating Jupiter Planet */
+.planet {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff9f6b, #b45a27 70%);
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: float 4s ease-in-out infinite;
+  box-shadow: 0 0 40px rgba(255, 120, 60, 0.4);
+}
+
+/* Planet Ring */
+.planet::after {
+  content: "";
+  position: absolute;
+  width: 380px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 200, 160, 0.25);
+  top: 90px;
+  left: -60px;
+  transform: rotate(-18deg);
+  filter: blur(2px);
+}
+
+@keyframes float {
+  0% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-18px); }
+  100% { transform: translateX(-50%) translateY(0); }
+}
+
+h1 {
+  margin-top: 420px;
+  font-size: 2.8rem;
+  font-weight: 700;
+}
+
+p {
+  opacity: 0.85;
+  margin-top: -10px;
+}
+
+button {
+  margin-top: 40px;
+  background: linear-gradient(180deg, #4f8cff, #1e66ff);
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(30, 102, 255, 0.45);
+  transition: 0.25s;
+}
+button:hover {
+  transform: scale(1.05);
+}
 </style>
 </head>
+
 <body>
 
-<div class="planet" aria-hidden="true"></div>
+<div class="planet"></div>
 
-<div class="card" role="main" aria-labelledby="title">
-  <h1 id="title">Mopy Developmentz™ — Dev Portal</h1>
-  <p>Internal team dashboard for tasks & collaboration. Secure for team use.</p>
+<h1>Mopy Developmentz</h1>
+<p>Professional development studio — Roblox, scripts, websites, UGC & more.</p>
 
-  <a class="cta" href="login.html">Go to Login</a>
-  <small>Use your developer credentials to log in.</small>
-</div>
-
-<script>
-/* decorative stars */
-(function addStars(n=70){
-  for(let i=0;i<n;i++){
-    const s=document.createElement('div');
-    s.className='star';
-    const size = (Math.random()*2.2)+0.6;
-    s.style.width = s.style.height = size+'px';
-    s.style.left = Math.random()*100 + 'vw';
-    s.style.top  = Math.random()*100 + 'vh';
-    s.style.opacity = 0.12 + Math.random()*0.65;
-    document.body.appendChild(s);
-  }
-})();
-</script>
+<button onclick="location.href='login.html'">Developer Login</button>
 
 </body>
 </html>
