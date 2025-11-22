@@ -1,92 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Mopy Developmentz</title>
-
-<style>
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: Inter, Arial, sans-serif;
-  background: radial-gradient(circle at 20% 20%, #1b2346, #05060f 70%);
-  overflow-x: hidden;
-  color: white;
-  text-align: center;
-}
-
-/* Floating Jupiter Planet */
-.planet {
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ff9f6b, #b45a27 70%);
-  position: absolute;
-  top: 120px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: float 4s ease-in-out infinite;
-  box-shadow: 0 0 40px rgba(255, 120, 60, 0.4);
-}
-
-/* Planet Ring */
-.planet::after {
-  content: "";
-  position: absolute;
-  width: 380px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(255, 200, 160, 0.25);
-  top: 90px;
-  left: -60px;
-  transform: rotate(-18deg);
-  filter: blur(2px);
-}
-
-@keyframes float {
-  0% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-18px); }
-  100% { transform: translateX(-50%) translateY(0); }
-}
-
-h1 {
-  margin-top: 420px;
-  font-size: 2.8rem;
-  font-weight: 700;
-}
-
-p {
-  opacity: 0.85;
-  margin-top: -10px;
-}
-
-button {
-  margin-top: 40px;
-  background: linear-gradient(180deg, #4f8cff, #1e66ff);
-  border: none;
-  padding: 16px 32px;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 8px 30px rgba(30, 102, 255, 0.45);
-  transition: 0.25s;
-}
-button:hover {
-  transform: scale(1.05);
-}
-</style>
+  <title>Space Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div class="planet"></div>
-
-<h1>Mopy Developmentz</h1>
-<p>Professional development studio — Roblox, scripts, websites, UGC & more.</p>
-
-<button onclick="location.href='login.html'">Developer Login</button>
+<div class="center-box">
+  <h1>🚀 Mopy Developmentz Task Manager</h1>
+  <p>Organize missions. Track tasks. Conquer the galaxy.</p>
+  <a href="login.html">
+    <button>Enter Command Center</button>
+  </a>
+</div>
 
 </body>
 </html>
