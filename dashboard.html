@@ -1,369 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Mopy Developmentz — Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mopy Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-  :root{--panel:rgba(255,255,255,0.06);--accent:#4f8cff}
-  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:
-    url('/mnt/data/35040c19-9acb-483f-89c9-865a64ccb1dc.png') center/cover no-repeat,
-    linear-gradient(180deg,#04061a 0%, #071428 60%);color:#fff}
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
-    radial-gradient(600px 260px at 12% 20%, rgba(79,140,255,0.05), transparent 12%),
-    radial-gradient(450px 220px at 82% 72%, rgba(100,60,150,0.03), transparent 12%);mix-blend-mode:screen}
-  .planet{position:fixed;right:6%;top:6%;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #ffcf8b,#d47f34 40%,#5a2a82 85%);opacity:0.12;pointer-events:none}
-  .wrap{max-width:1100px;margin:26px auto;padding:20px}
-  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-  header h1{font-size:20px;margin:0}
-  .panel{background:var(--panel);border-radius:12px;padding:18px;backdrop-filter:blur(8px);box-shadow:0 12px 40px rgba(0,0,0,0.6)}
-  .cols{display:grid;grid-template-columns:1fr 420px;gap:18px;margin-top:16px}
-  @media(max-width:920px){.cols{grid-template-columns:1fr;}}
-  .small{color:rgba(255,255,255,0.85);font-size:14px}
-  label{display:block;margin-top:8px;font-size:13px;color:rgba(255,255,255,0.86)}
-  input,textarea,select{width:100%;padding:10px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:#fff;margin-top:8px;box-sizing:border-box}
-  textarea{min-height:84px;resize:vertical}
-  button{background:linear-gradient(180deg,var(--accent),#1e66ff);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;margin-top:10px}
-  .task{background:rgba(255,255,255,0.03);padding:12px;border-radius:10px;margin-bottom:12px}
-  .meta{font-size:12px;color:rgba(255,255,255,0.7);margin-top:6px}
-  .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);margin-right:8px;font-size:13px;border:1px solid rgba(255,255,255,0.03)}
-  .finished{color:#7dff91;font-weight:700}
-  .small-muted{font-size:13px;color:rgba(255,255,255,0.7)}
-  footer{margin-top:14px;text-align:center;color:rgba(255,255,255,0.28);font-size:13px}
+body {
+  margin:0;
+  background: radial-gradient(circle at 20% 20%, #101531, #04050b 80%);
+  font-family: Inter, Arial, sans-serif;
+  color:white;
+  min-height:100vh;
+  padding:40px;
+}
+
+/* Jupiter */
+.planet {
+  width:180px;
+  height:180px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 30%, #ff9f6b, #b45a27);
+  position:absolute;
+  right:40px;
+  top:40px;
+  animation: float 4s ease-in-out infinite;
+}
+.planet::after {
+  content:"";
+  position:absolute;
+  width:260px;
+  height:80px;
+  border-radius:50%;
+  background:rgba(255,200,160,0.25);
+  top:60px;
+  left:-40px;
+  transform:rotate(-18deg);
+  filter:blur(2px);
+}
+@keyframes float {
+  0%{ transform:translateY(0); }
+  50%{ transform:translateY(-12px); }
+  100%{ transform:translateY(0); }
+}
+
+h1 { margin-bottom:10px; }
+#userRole { opacity:0.7; margin-bottom:30px; }
+
+.panel {
+  background:rgba(255,255,255,0.06);
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:30px;
+  backdrop-filter:blur(6px);
+}
+
+input, select {
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  width:100%;
+  background:rgba(255,255,255,0.05);
+  color:white;
+  margin-top:10px;
+}
+
+button {
+  padding:12px 20px;
+  border:none;
+  border-radius:10px;
+  margin-top:14px;
+  background:linear-gradient(180deg,#4f8cff,#1e66ff);
+  color:white;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.task {
+  background:rgba(255,255,255,0.05);
+  padding:14px;
+  border-radius:10px;
+  margin-top:12px;
+}
+.assigned { opacity:0.8; font-size:0.9rem; }
+.finishBtn {
+  margin-top:8px;
+  padding:8px 14px;
+  font-size:0.9rem;
+}
 </style>
 </head>
+
 <body>
 
-<div class="planet" aria-hidden="true"></div>
+<div class="planet"></div>
 
-<div class="wrap">
-  <header>
-    <h1>Mopy Developmentz — Team Dashboard</h1>
-    <div id="hdrRight" class="small"></div>
-  </header>
+<h1>Mopy Dev Dashboard</h1>
+<div id="userRole"></div>
 
-  <div class="panel">
-    <div class="cols">
-      <!-- Left column: tasks -->
-      <div>
-        <h3 class="small">Open Tasks</h3>
-        <div id="tasksContainer" style="margin-top:12px"></div>
-      </div>
+<!-- CREATE TASK PANEL -->
+<div class="panel" id="createPanel" style="display:none;">
+  <h2>Create a Task</h2>
+  <input id="taskTitle" placeholder="Task title" />
 
-      <!-- Right column: create -->
-      <div>
-        <h3 class="small">Create Task</h3>
-        <div id="createArea"></div>
+  <label style="opacity:0.8;">Assign to developers:</label>
+  <select id="assignList" multiple size="6">
+    <option>mopy</option>
+    <option>astral_void</option>
+    <option>Etern</option>
+    <option>CX</option>
+    <option>St3amyEggroll</option>
+    <option>Keagan</option>
+  </select>
 
-        <div style="margin-top:12px" class="small-muted">
-          Rules:
-          <ul style="margin:8px 0 0 18px">
-            <li><strong>Owner</strong> can assign multiple users, edit/delete any task.</li>
-            <li><strong>Editors</strong> can create (max 3/week), edit/delete only their own tasks.</li>
-            <li><strong>Viewers</strong> can only view; cannot create, edit, delete, or finish.</li>
-            <li>Shared tasks require every assigned user to mark their own finish; progress shows X/Y finished.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+  <button onclick="createTask()">Create Task</button>
+  <div id="createErr" style="color:#ff6f6f;margin-top:10px;"></div>
+</div>
 
-  <footer>Local demo data stored in your browser (localStorage). Move to a backend for production.</footer>
+<!-- TASK LIST -->
+<div class="panel">
+  <h2>Tasks</h2>
+  <div id="taskList">Loading…</div>
 </div>
 
 <script>
-/* ---------- CONFIG ---------- */
-const ALL_USERS = ["mopy","astral_void","Etern","CX","St3amyEggroll","Keagan"];
-const ADMIN = "mopy";                     // Owner
-const STORAGE_KEY = "mopy_tasks_v3";
+const supabase = supabase.createClient(
+  "https://lzsopkzlifwjdhtxtrkt.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6c29wa3psaWZ3amRodHh0cmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4MjIzNzMsImV4cCI6MjA3OTM5ODM3M30.owsfr2JR_a5DH76TMvh1JX4atPGznmZz1ikQ60nwT8k"
+);
 
-/* role derived from login */
-const currentUser = localStorage.getItem('dev_user') || null;
-const currentRole = localStorage.getItem('dev_role') || null;
-if(!currentUser){ alert('Not logged in. Redirecting to login.'); location.href='login.html'; }
-document.getElementById('hdrRight').textContent = `Logged in: ${currentUser} (${currentRole})`;
+// Load user
+const USER = localStorage.getItem("dev_user");
+const ROLE = localStorage.getItem("dev_role");
 
-/* ---------- week helper ---------- */
-Date.prototype.getWeekNumber = function(){
-  const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  return d.getUTCFullYear()*100 + Math.ceil((((d - yearStart) / 86400000) + 1)/7);
-};
-function currentWeek(){ return new Date().getWeekNumber(); }
+if (!USER) location.href = "login.html";
 
-/* ---------- storage ---------- */
-function loadTasks(){ return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
-function saveTasks(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
+document.getElementById("userRole").textContent =
+  "Logged in as: " + USER + " (" + ROLE + ")";
 
-/* ---------- create area ---------- */
-function renderCreateArea(){
-  const container = document.getElementById('createArea');
-  if(currentRole === "Viewer"){
-    container.innerHTML = `<div class="small-muted">You have VIEW-ONLY access.</div>`;
-    return;
-  }
-
-  if(currentRole === "Owner"){
-    container.innerHTML = `
-      <label>Title</label><input id="t_title" placeholder="Task title">
-      <label>Description</label><textarea id="t_desc" placeholder="Short description (optional)"></textarea>
-      <label>Assign to (ctrl/cmd + click to multi-select)</label>
-      <select id="t_assignees" multiple size="${ALL_USERS.length}">
-        ${ALL_USERS.map(u=>`<option value="${u}">${u}</option>`).join('')}
-      </select>
-      <div style="margin-top:8px"><button id="createBtn">Create & Assign</button></div>
-    `;
-    document.getElementById('createBtn').addEventListener('click', ()=>handleCreate(true));
-    return;
-  }
-
-  // Editor
-  container.innerHTML = `
-    <label>Title</label><input id="t_title" placeholder="Task title">
-    <label>Description</label><textarea id="t_desc" placeholder="Short description (optional)"></textarea>
-    <div style="margin-top:8px"><button id="createBtn">Create (assigned to you)</button></div>
-    <div class="small-muted" style="margin-top:8px">You may create up to 3 tasks per week.</div>
-  `;
-  document.getElementById('createBtn').addEventListener('click', ()=>handleCreate(false));
+if (ROLE === "owner" || ROLE === "editor") {
+  document.getElementById("createPanel").style.display = "block";
 }
 
-/* ---------- create logic ---------- */
-function handleCreate(isOwner){
-  const title = document.getElementById('t_title').value.trim();
-  const desc = document.getElementById('t_desc').value.trim();
-  if(!title){ alert('Add a title'); return; }
-  const tasks = loadTasks();
-  const week = currentWeek();
+async function loadTasks() {
+  const { data } = await supabase.from("tasks").select("*");
 
-  if(currentRole === "Editor" && !isOwner){
-    const ownCount = tasks.filter(t => t.creator === currentUser && t.week === week).length;
-    if(ownCount >= 3){ alert('You reached the 3 tasks/week limit.'); return; }
-  }
+  const box = document.getElementById("taskList");
+  box.innerHTML = "";
 
-  let assignees = [];
-  if(isOwner){
-    const select = document.getElementById('t_assignees');
-    assignees = Array.from(select.selectedOptions).map(o=>o.value).filter(Boolean);
-    if(assignees.length === 0){ alert('Select at least one assignee.'); return; }
-  } else {
-    assignees = [currentUser];
-  }
+  data.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "task";
 
-  // build finishedBy map
-  const finishedBy = {};
-  assignees.forEach(a => finishedBy[a] = false);
+    const assigned = JSON.parse(t.assigned_to || "[]");
+    const finished = JSON.parse(t.finished_by || "[]");
 
-  const task = {
-    id: 't_' + Date.now(),
-    title, desc, creator: currentUser, assignees, finishedBy,
-    createdAt: Date.now(), week, archived: false
-  };
+    const allDone = finished.length >= assigned.length;
 
-  tasks.unshift(task);
-  saveTasks(tasks);
-  document.getElementById('t_title').value = '';
-  document.getElementById('t_desc').value = '';
-  if(isOwner) document.getElementById('t_assignees').selectedIndex = -1;
-  renderTasks();
-}
-
-/* ---------- render tasks ---------- */
-function renderTasks(){
-  const container = document.getElementById('tasksContainer');
-  const tasks = loadTasks();
-  if(tasks.length === 0){ container.innerHTML = '<div class="small-muted">No tasks yet.</div>'; return; }
-  container.innerHTML = '';
-
-  tasks.forEach(task=>{
-    const total = task.assignees.length;
-    const doneCount = Object.values(task.finishedBy || {}).filter(v=>v).length;
-    const isCompleted = doneCount === total;
-    const wrapper = document.createElement('div');
-    wrapper.className = 'task';
-
-    wrapper.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <strong>${escapeHtml(task.title)}</strong>
-          <div class="meta">by ${escapeHtml(task.creator)} • ${new Date(task.createdAt).toLocaleString()}</div>
-        </div>
-        <div>${isCompleted ? '<span class="finished">Completed</span>' : `<span>${doneCount}/${total} finished</span>`}</div>
-      </div>
-      <div style="margin-top:8px;color:rgba(255,255,255,0.92)">${escapeHtml(task.desc || '')}</div>
-      <div style="margin-top:10px">
-        <div style="margin-bottom:6px;font-size:13px;color:rgba(255,255,255,0.86)">Assigned:</div>
-        <div id="assignList_${task.id}"></div>
-      </div>
-      <div style="margin-top:10px" id="controls_${task.id}"></div>
+    div.innerHTML = `
+      <b>${t.title}</b><br>
+      <div class="assigned">Assigned to: ${assigned.join(", ")}</div>
+      <div>Status: ${allDone ? "✅ Completed" : finished.length + "/" + assigned.length}</div>
     `;
 
-    container.appendChild(wrapper);
-
-    // render assignee list with checkboxes
-    const assignList = document.getElementById(`assignList_${task.id}`);
-    task.assignees.forEach(a=>{
-      const row = document.createElement('div');
-      row.style.display='flex'; row.style.alignItems='center'; row.style.gap='10px'; row.style.marginBottom='6px';
-
-      const input = document.createElement('input');
-      input.type='checkbox';
-      input.checked = !!task.finishedBy[a];
-
-      // rules for enabling checkbox:
-      // - Viewers never allowed
-      // - Assignee can toggle their own checkbox
-      // - Owner can toggle any checkbox
-      // - Creator can toggle checkboxes if they are Owner OR they are Editor (creators can mark assignees done)
-      const isCreator = (currentUser === task.creator);
-      const creatorIsEditor = (currentRole === "Editor");
-      let enabled = false;
-
-      if(currentRole === "Viewer"){
-        enabled = false;
-      } else if(currentUser === a){
-        enabled = true; // assignee can toggle self (if not Viewer)
-      } else if(currentUser === ADMIN){
-        enabled = true; // Owner can toggle any
-      } else if(isCreator && currentRole === "Editor"){
-        // editors who created the task may toggle assignees they assigned (this follows your rule)
-        enabled = true;
-      } else {
-        enabled = false;
-      }
-
-      input.disabled = !enabled;
-      input.addEventListener('change', ()=>toggleFinish(task.id, a, input.checked));
-
-      const chip = document.createElement('div');
-      chip.className='chip';
-      chip.textContent = a + (a === task.creator ? ' (creator)' : '');
-
-      row.appendChild(input);
-      row.appendChild(chip);
-      assignList.appendChild(row);
-    });
-
-    // controls
-    const controls = document.getElementById(`controls_${task.id}`);
-    // "I'm Done" button (visible only to assignees who haven't finished and not viewers)
-    if(currentRole !== "Viewer" && task.assignees.includes(currentUser) && !task.finishedBy[currentUser]){
-      const btn = document.createElement('button');
-      btn.textContent = "I'm Done";
-      btn.addEventListener('click', ()=>{ toggleFinish(task.id, currentUser, true); });
-      controls.appendChild(btn);
+    // Can finish?
+    if (
+      assigned.includes(USER) &&
+      !finished.includes(USER) &&
+      ROLE !== "viewer"
+    ) {
+      const b = document.createElement("button");
+      b.textContent = "Mark Finished";
+      b.className = "finishBtn";
+      b.onclick = () => finishTask(t.id, finished);
+      div.appendChild(b);
     }
 
-    // edit/delete: Owner can edit/delete any; Editor can edit/delete only their own tasks
-    if(currentRole === "Owner" || (currentRole === "Editor" && task.creator === currentUser)){
-      const edit = document.createElement('button');
-      edit.textContent = 'Edit';
-      edit.style.marginLeft = '8px';
-      edit.addEventListener('click', ()=>editTask(task.id));
-      const del = document.createElement('button');
-      del.textContent = 'Delete';
-      del.style.marginLeft = '8px';
-      del.addEventListener('click', ()=>deleteTask(task.id));
-      controls.appendChild(edit);
-      controls.appendChild(del);
-    }
+    box.appendChild(div);
   });
 }
 
-/* ---------- toggle finish ---------- */
-function toggleFinish(taskId, userName, checked){
-  const tasks = loadTasks();
-  const t = tasks.find(x=>x.id===taskId);
-  if(!t) return;
+async function finishTask(id, finishedList) {
+  finishedList.push(USER);
+  await supabase.from("tasks").update({
+    finished_by: JSON.stringify(finishedList)
+  }).eq("id", id);
 
-  // Viewers cannot toggle
-  if(currentRole === "Viewer"){
-    alert("You do not have permission to finish tasks.");
-    renderTasks();
-    return;
-  }
-
-  // permission check:
-  // allowed if:
-  // - currentUser === userName (assignee toggles themselves)
-  // - OR currentUser === ADMIN (owner)
-  // - OR (currentUser === task.creator AND currentRole === "Editor") — editor creator can toggle assigned users
-  if(!(currentUser === userName || currentUser === ADMIN || (currentUser === t.creator && currentRole === "Editor"))){
-    alert("You can't change another user's progress.");
-    renderTasks();
-    return;
-  }
-
-  t.finishedBy[userName] = !!checked;
-
-  // if all finished, mark archived true (keeps history)
-  const doneCount = Object.values(t.finishedBy).filter(v=>v).length;
-  if(doneCount === t.assignees.length){
-    t.archived = true;
-  }
-
-  saveTasks(tasks);
-  renderTasks();
+  loadTasks();
 }
 
-/* ---------- edit / delete ---------- */
-function editTask(id){
-  const tasks = loadTasks();
-  const t = tasks.find(x=>x.id===id);
-  if(!t) return;
-  // permission: Owner can edit any; Editor only own
-  if(!(currentRole === "Owner" || (currentRole === "Editor" && t.creator === currentUser))){ alert('No permission'); return; }
+async function createTask() {
+  const title = document.getElementById("taskTitle").value.trim();
+  const assignedOptions = [...document.getElementById("assignList").selectedOptions].map(o => o.value);
+  const err = document.getElementById("createErr");
 
-  const newTitle = prompt('Edit title', t.title);
-  if(newTitle === null) return;
-  const newDesc = prompt('Edit description', t.desc || '');
-  if(newDesc === null) return;
+  if (!title) return err.textContent = "Title is required.";
+  if (assignedOptions.length === 0) return err.textContent = "Assign at least one developer.";
 
-  if(currentRole === "Owner"){
-    const newAssignees = prompt('Assign users (comma separated)', t.assignees.join(','));
-    if(newAssignees === null) return;
-    const arr = newAssignees.split(',').map(s=>s.trim()).filter(Boolean);
-    if(arr.length === 0){ alert('Need at least one assignee'); return; }
-    // rebuild finishedBy map, preserving true flags where possible
-    const newFinished = {};
-    arr.forEach(a => newFinished[a] = !!t.finishedBy[a]);
-    t.assignees = arr;
-    t.finishedBy = newFinished;
+  if (ROLE === "viewer") return err.textContent="Viewers cannot create tasks.";
+
+  if (ROLE === "editor") {
+    const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+    const { data } = await supabase.from("tasks")
+      .select("*")
+      .eq("creator", USER);
+
+    const count = data.filter(t => new Date(t.created_at) >= weekStart).length;
+    if (count >= 3) return err.textContent = "You already created 3 tasks this week.";
   }
 
-  t.title = newTitle;
-  t.desc = newDesc;
-  saveTasks(tasks);
-  renderTasks();
+  await supabase.from("tasks").insert({
+    title,
+    assigned_to: JSON.stringify(assignedOptions),
+    finished_by: "[]",
+    creator: USER
+  });
+
+  err.textContent = "";
+  taskTitle.value = "";
+  loadTasks();
 }
 
-function deleteTask(id){
-  const tasks = loadTasks();
-  const t = tasks.find(x=>x.id===id);
-  if(!t) return;
-  // permission: Owner can delete any; Editor only own
-  if(!(currentRole === "Owner" || (currentRole === "Editor" && t.creator === currentUser))){ alert('No permission'); return; }
-  if(!confirm('Delete task?')) return;
-  const filtered = tasks.filter(x=>x.id!==id);
-  saveTasks(filtered);
-  renderTasks();
-}
+loadTasks();
 
-/* ---------- utility ---------- */
-function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-
-/* ---------- init ---------- */
-function init(){
-  // ensure storage exists
-  if(!localStorage.getItem(STORAGE_KEY)) localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-  renderCreateArea();
-  renderTasks();
-}
-init();
-
-/* auto refresh (defensive) */
-setInterval(()=>renderTasks(), 20000);
+// Live update
+supabase.channel("tasks").on("postgres_changes", { event: "*", schema:"public", table:"tasks" }, loadTasks).subscribe();
 </script>
 
 </body>
