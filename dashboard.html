@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #060b19, #03040c);
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 20px;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #boards {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .column {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            backdrop-filter: blur(6px);
+            min-height: 500px;
+        }
+
+        .column h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .task {
+            background: rgba(255,255,255,0.08);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: grab;
+        }
+
+        #logout {
+            background: #ff4444;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div id="welcome">Welcome Developer</div>
+    <button id="logout" onclick="logout()">Logout</button>
+</header>
+
+<div id="boards">
+
+    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-col="todo">
+        <h2>To Do</h2>
+    </div>
+
+    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-col="work">
+        <h2>In Progress</h2>
+    </div>
+
+    <div class="column" ondrop="drop(event)" ondragover="allowDrop(event)" data-col="done">
+        <h2>Completed</h2>
+    </div>
+
+</div>
+
+<script>
+    if (!localStorage.getItem("devUser")) {
+        window.location.href = "index.html";
+    }
+
+    document.getElementById("welcome").textContent =
+        "Welcome, " + localStorage.getItem("devUser");
+
+    const sampleTasks = [
+        { id: "t1", text: "Fix UI Bugs", col: "todo" },
+        { id: "t2", text: "Create Login System", col: "work" },
+        { id: "t3", text: "Optimize Database", col: "done" },
+    ];
+
+    sampleTasks.forEach(t => createTask(t));
+
+    function createTask(task) {
+        const div = document.createElement("div");
+        div.className = "task";
+        div.id = task.id;
+        div.draggable = true;
+        div.ondragstart = drag;
+        div.innerText = task.text;
+
+        document.querySelector(`[data-col="${task.col}"]`).appendChild(div);
+    }
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        const data = ev.dataTransfer.getData("text");
+        ev.target.closest(".column").appendChild(document.getElementById(data));
+    }
+
+    function logout() {
+        localStorage.removeItem("devUser");
+        window.location.href = "index.html";
+    }
+</script>
+
+</body>
+</html>
