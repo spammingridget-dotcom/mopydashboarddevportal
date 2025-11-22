@@ -1,18 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Mopy Developmentz Task Manager</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mopy Developmentz — Portal</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="planet" aria-hidden="true"></div>
 
-<div class="center-box">
-  <h1>🚀 Mopy Developmentz Task Manager</h1>
-  <p>Organize missions. Track tasks. Conquer the galaxy.</p>
-  <a href="login.html">
-    <button>Login To Task Manager</button>
-  </a>
-</div>
+  <main class="center-card">
+    <h1>Mopy Developmentz™ — Dev Portal</h1>
+    <p class="lead">Team dashboard for tasks & collaboration.</p>
 
+    <div class="actions">
+      <a class="btn primary" href="login.html">Login</a>
+      <a class="btn ghost" href="dashboard.html">Open Demo Dashboard</a>
+    </div>
+
+    <small class="muted">Use your team credentials to sign in.</small>
+  </main>
+
+  <script>
+    // small decorative stars - optional
+    (function addStars(n=60){
+      for(let i=0;i<n;i++){
+        const s=document.createElement('div');
+        s.className='star';
+        const size=(Math.random()*2.5)+0.6;
+        s.style.width=s.style.height=size+'px';
+        s.style.left=Math.random()*100+'vw';
+        s.style.top=Math.random()*100+'vh';
+        s.style.opacity=0.08+Math.random()*0.6;
+        document.body.appendChild(s);
+      }
+    })();
+  </script>
 </body>
 </html>
