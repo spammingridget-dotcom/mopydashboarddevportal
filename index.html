@@ -3,35 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dev Portal Login</title>
-
+    <title>Dev Login — Mopy Developmentz</title>
     <style>
         body {
             margin: 0;
-            background: radial-gradient(circle at 50% 20%, #0a0f2a, #03040c);
+            padding: 0;
             height: 100vh;
+            background: radial-gradient(circle at 50% 20%, #0b1d39, #04070f);
+            font-family: Arial, sans-serif;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: Arial, sans-serif;
-            color: white;
-            overflow: hidden;
         }
 
-        .login-box {
+        .box {
             width: 350px;
-            padding: 30px;
             background: rgba(255,255,255,0.07);
-            border-radius: 16px;
-            text-align: center;
-            backdrop-filter: blur(10px);
+            padding: 35px;
+            border-radius: 14px;
+            backdrop-filter: blur(8px);
             box-shadow: 0 0 25px rgba(0,0,0,0.4);
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+            text-align: center;
         }
 
         input {
@@ -46,13 +39,13 @@
         button {
             width: 95%;
             padding: 12px;
+            margin-top: 15px;
             background: #1e66ff;
-            border: none;
-            border-radius: 10px;
             color: white;
-            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            border: none;
             cursor: pointer;
-            transition: 0.25s;
         }
 
         button:hover {
@@ -61,46 +54,45 @@
 
         .error {
             margin-top: 10px;
-            color: #ff7070;
-            font-size: 0.9rem;
+            color: #ff6b6b;
         }
     </style>
 </head>
-
 <body>
 
-<div class="login-box">
-    <h2>Developer Login</h2>
+    <div class="box">
+        <h2>Developer Login</h2>
 
-    <input type="text" id="username" placeholder="Username">
-    <input type="password" id="password" placeholder="Password">
+        <input id="user" placeholder="Username">
+        <input id="pass" type="password" placeholder="Password">
 
-    <button onclick="login()">Login</button>
+        <button onclick="login()">Login</button>
 
-    <div class="error" id="error"></div>
-</div>
+        <div id="error" class="error"></div>
+    </div>
 
-<script>
-    const users = {
-        "mopy": "devpass123",
-        "admin": "adminpass",
-        "dev1": "password1",
-        "dev2": "password2"
-    };
+    <script>
+        const users = {
+            "mopy": "mopy565329",
+            "astral_void": "ketchup_W1tHw@w",
+            "Etern": "w1thD43th@",
+            "CX": "#Mus1c1sSPOTIFY",
+            "St3amyEggroll": "eggwh1teEVERYWHERE{}"
+        };
 
-    function login() {
-        const u = document.getElementById("username").value;
-        const p = document.getElementById("password").value;
-        const error = document.getElementById("error");
+        function login() {
+            let u = document.getElementById("user").value;
+            let p = document.getElementById("pass").value;
 
-        if (users[u] && users[u] === p) {
-            localStorage.setItem("devUser", u);
-            window.location.href = "dashboard.html";
-        } else {
-            error.innerHTML = "Incorrect username or password.";
+            if (users[u] && users[u] === p) {
+                localStorage.setItem("loggedUser", u);
+                window.location.href = "dashboard.html";
+            } else {
+                document.getElementById("error").innerText = "Incorrect login.";
+            }
         }
-    }
-</script>
+    </script>
 
 </body>
 </html>
+
