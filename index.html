@@ -3,96 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dev Login — Mopy Developmentz</title>
+    <title>Mopy Devpanel — Login</title>
+
     <style>
-        body {
+        /* PAGE RESET */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             height: 100vh;
-            background: radial-gradient(circle at 50% 20%, #0b1d39, #04070f);
             font-family: Arial, sans-serif;
             color: white;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(135deg, #090015, #13002e, #210045);
+            background-size: 300% 300%;
+            animation: bgShift 18s ease infinite;
         }
 
-        .box {
-            width: 350px;
-            background: rgba(255,255,255,0.07);
+        /* Soft moving galaxy colors */
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* BLUR PANEL */
+        .panel {
+            width: 380px;
             padding: 35px;
-            border-radius: 14px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 25px rgba(0,0,0,0.4);
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.4);
             text-align: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%,100% { transform: translateY(0px) }
+            50% { transform: translateY(-12px) }
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 25px rgba(255,255,255,0.3);
+        }
+
+        p {
+            opacity: 0.8;
+            margin-bottom: 20px;
         }
 
         input {
-            width: 90%;
+            width: 100%;
             padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
+            margin-top: 10px;
             border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            font-size: 1rem;
             outline: none;
         }
 
-        button {
-            width: 95%;
-            padding: 12px;
-            margin-top: 15px;
+        .btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 14px;
             background: #1e66ff;
-            color: white;
-            font-weight: bold;
-            border-radius: 10px;
             border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            color: white;
             cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 0 20px rgba(30,102,255,0.4);
         }
 
-        button:hover {
+        .btn:hover {
             background: #4c82ff;
+            box-shadow: 0 0 28px rgba(76,130,255,0.55);
         }
 
-        .error {
-            margin-top: 10px;
-            color: #ff6b6b;
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
         }
-    </style>
-</head>
-<body>
-
-    <div class="box">
-        <h2>Developer Login</h2>
-
-        <input id="user" placeholder="Username">
-        <input id="pass" type="password" placeholder="Password">
-
-        <button onclick="login()">Login</button>
-
-        <div id="error" class="error"></div>
-    </div>
-
-    <script>
-        const users = {
-            "mopy": "mopy565329",
-            "astral_void": "ketchup_W1tHw@w",
-            "Etern": "w1thD43th@",
-            "CX": "#Mus1c1sSPOTIFY",
-            "St3amyEggroll": "eggwh1teEVERYWHERE{}"
-        };
-
-        function login() {
-            let u = document.getElementById("user").value;
-            let p = document.getElementById("pass").value;
-
-            if (users[u] && users[u] === p) {
-                localStorage.setItem("loggedUser", u);
-                window.location.href = "dashboard.html";
-            } else {
-                document.getElementById("error").innerText = "Incorrect login.";
-            }
-        }
-    </script>
-
-</body>
-</html>
-
