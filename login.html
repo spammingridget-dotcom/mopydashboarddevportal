@@ -1,105 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Mopy Developmentz — Login</title>
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-:root { --panel: rgba(255,255,255,0.06); --acc1:#4f8cff; --acc2:#1e66ff; }
-
-body {
-  margin:0;
-  height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background: radial-gradient(circle at 20% 20%, #1e2450, #05060f 80%);
-  color:white;
-  font-family:Inter,Arial;
-}
-
-.wrap {
-  width:380px;
-  padding:28px;
-  border-radius:14px;
-  background:var(--panel);
-  backdrop-filter:blur(8px);
-  text-align:center;
-  box-shadow:0 10px 40px rgba(0,0,0,0.5);
-}
-
-input {
-  width:100%;
-  padding:12px;
-  margin-top:12px;
-  background:rgba(255,255,255,0.05);
-  border:none;
-  border-radius:10px;
-  color:white;
-}
-
-button {
-  width:100%;
-  margin-top:16px;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(180deg,var(--acc1),var(--acc2));
-  color:white;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.err { color:#ff6b6b; margin-top:10px; min-height:20px; }
-small { opacity:0.7; display:block; margin-top:10px; }
-</style>
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
 </head>
 
 <body>
-<div class="wrap">
-  <h2>Developer Login</h2>
-  <input id="username" placeholder="Username" />
-  <input id="password" type="password" placeholder="Password" />
-  <button id="loginBtn">Sign In</button>
-  <div class="err" id="err"></div>
-  <small>Issues? Contact Mopy_UGC</small>
+
+<div class="center-box">
+  <h2>🔐 Login</h2>
+  <p>Enter your email for a magic link</p>
+
+  <input id="email" type="email" placeholder="Email" />
+  <button onclick="login()">Send Login Link</button>
 </div>
 
-<script>
-const supabase = supabase.createClient(
-  "https://lzsopkzlifwjdhtxtrkt.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6c29wa3psaWZ3amRodHh0cmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4MjIzNzMsImV4cCI6MjA3OTM5ODM3M30.owsfr2JR_a5DH76TMvh1JX4atPGznmZz1ikQ60nwT8k"
-);
-
-/* Local credential table (pure demo) */
-const USERS = {
-  "mopy":      { pass: "mopy565329", role: "owner" },
-  "astral_void": { pass: "ketchup_W1tHw@w", role: "editor" },
-  "Etern":     { pass: "w1thD43th@", role: "editor" },
-  "CX":        { pass: "#Mus1c1sSPOTIFY", role: "editor" },
-  "St3amyEggroll": { pass: "eggwh1teEVERYWHERE{}", role: "editor" },
-  "Keagan":    { pass: "wkuj87", role: "viewer" }
-};
-
-document.getElementById("loginBtn").onclick = () => login();
-
-async function login() {
-  const u = username.value.trim();
-  const p = password.value.trim();
-  const err = document.getElementById("err");
-
-  if (!USERS[u]) return err.textContent = "Unknown user.";
-  if (p !== USERS[u].pass) return err.textContent = "Invalid password.";
-
-  // Save user+role
-  localStorage.setItem("dev_user", u);
-  localStorage.setItem("dev_role", USERS[u].role);
-
-  location.href = "dashboard.html";
-}
-</script>
 </body>
 </html>
