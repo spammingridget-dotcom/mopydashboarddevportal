@@ -1,45 +1,60 @@
-/* Simple, clean space theme */
-:root{
-  --bg1:#04061a; --bg2:#071428;
-  --panel: rgba(255,255,255,0.06);
-  --accent: #4f8cff; --accent2:#1e66ff;
-  --muted: rgba(255,255,255,0.76);
-  --glass: rgba(255,255,255,0.04);
-  font-family: Inter, Arial, sans-serif;
+body.space-bg {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top, #0a0f24, #050512 70%);
+    font-family: Arial, sans-serif;
+    color: white;
 }
-html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2) 70%);color:#fff}
-.planet{position:fixed;right:6%;top:6%;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #ffd28a,#d47f34 45%, #5a2a82 85%);opacity:0.10;pointer-events:none}
-.star{position:fixed;border-radius:50%;background:#fff;filter:blur(.4px);opacity:.2}
 
-/* center card (index/login) */
-.center-card{width:420px;max-width:92vw;margin:10vh auto;padding:30px;border-radius:14px;background:var(--panel);backdrop-filter:blur(8px);box-shadow:0 14px 40px rgba(0,0,0,0.6);text-align:center}
-.center-card h1{margin:0 0 8px;font-size:1.6rem}
-.center-card .lead{opacity:.9;margin-bottom:14px}
-.actions{display:flex;gap:12px;justify-content:center;margin:18px 0}
-.btn{display:inline-block;padding:10px 16px;border-radius:10px;text-decoration:none;color:#fff;font-weight:700;border:none;cursor:pointer}
-.btn.primary{background:linear-gradient(180deg,var(--accent),var(--accent2));box-shadow:0 10px 30px rgba(30,102,255,0.12)}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff}
+.login-box {
+    width: 420px;
+    padding: 30px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+}
 
-/* shared small */
-.muted{color:rgba(255,255,255,0.6)}
-.small{font-size:0.9rem}
+.login-box h1 {
+    text-align: center;
+    margin-bottom: 25px;
+}
 
-/* login fields */
-.field{display:block;text-align:left;margin-top:12px}
-.field span{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px}
-input, textarea, select{width:100%;padding:10px;border-radius:8px;border:none;background:var(--glass);color:#fff;box-sizing:border-box}
+.login-box label {
+    display: block;
+    margin-top: 15px;
+}
 
-/* dashboard layout */
-.wrap{max-width:1100px;margin:28px auto;padding:16px}
-header{display:flex;justify-content:space-between;align-items:center}
-.panel{background:var(--panel);padding:16px;border-radius:12px;backdrop-filter:blur(8px);box-shadow:0 12px 40px rgba(0,0,0,0.6)}
-.cols{display:grid;grid-template-columns:1fr 380px;gap:18px}
-@media(max-width:920px){.cols{grid-template-columns:1fr}}
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    margin-top: 5px;
+}
 
-/* tasks */
-.task{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;margin-bottom:12px}
-.meta{font-size:12px;color:rgba(255,255,255,0.7);margin-top:6px}
-.chip{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.02);margin-right:8px;font-size:13px;border:1px solid rgba(255,255,255,0.03)}
-.small-muted{font-size:13px;color:rgba(255,255,255,0.7)}
-.err{color:#ff8a8a;margin-top:10px}
-.note{opacity:0.85;margin-top:10px}
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    background: #2d6cff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.login-box button:hover {
+    background: #1d4ed8;
+}
+
+.error-text {
+    color: #ff6b6b;
+    margin-top: 12px;
+    text-align: center;
+}
