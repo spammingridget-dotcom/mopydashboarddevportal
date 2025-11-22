@@ -6,8 +6,13 @@
 <title>Mopy Developmentz — Login</title>
 <style>
   :root{--panel:rgba(255,255,255,0.06);--accent:#4f8cff;--accent-2:#1e66ff}
-  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:linear-gradient(180deg,#030419, #06122a);color:white;display:flex;align-items:center;justify-content:center;}
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(600px 260px at 12% 20%, rgba(79,140,255,0.05), transparent 12%), radial-gradient(450px 220px at 82% 72%, rgba(100,60,150,0.03), transparent 12%);mix-blend-mode:screen;}
+  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:
+    /* attempt to use uploaded local image first, then gradient fallback */
+    url('/mnt/data/35040c19-9acb-483f-89c9-865a64ccb1dc.png') center/cover no-repeat,
+    linear-gradient(180deg,#030419, #06122a);color:white;display:flex;align-items:center;justify-content:center;}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
+    radial-gradient(600px 260px at 12% 20%, rgba(79,140,255,0.05), transparent 12%),
+    radial-gradient(450px 220px at 82% 72%, rgba(100,60,150,0.03), transparent 12%);mix-blend-mode:screen;}
   .wrap{width:380px;max-width:92vw;padding:28px;border-radius:12px;background:var(--panel);backdrop-filter:blur(8px);box-shadow:0 14px 40px rgba(0,0,0,0.6);text-align:center}
   h2{margin:0 0 6px 0}
   input{width:100%;padding:12px;border-radius:10px;border:none;margin-top:12px;background:rgba(255,255,255,0.03);color:white}
@@ -31,32 +36,30 @@
 
 <script>
 /*
-  For this demo we perform client-side hashed check (B option).
-  Plain passwords provided earlier are used to compute hashes locally,
-  then we compare hashes — still client-only (not secure), but avoids plaintext checks in logs.
+  Role-based users. Plain passwords are kept in PLAIN for demo hashing
+  (client-side). In production move auth to a backend.
 */
-
-/* Plain password map (kept in code for demo only) */
 const PLAIN = {
-  "mopy": "mopy565329",
-  "astral_void": "ketchup_W1tHw@w",
-  "Etern": "w1thD43th@",
-  "CX": "#Mus1c1sSPOTIFY",
-  "St3amyEggroll": "eggwh1teEVERYWHERE{}",
-  "Keagan":"NOTDOINGANYTHING"
+  "mopy": { pass: "mopy565329", role: "Owner" },
+  "astral_void": { pass: "ketchup_W1tHw@w", role: "Editor" },
+  "Etern": { pass: "w1thD43th@", role: "Editor" },
+  "CX": { pass: "#Mus1c1sSPOTIFY", role: "Editor" },
+  "St3amyEggroll": { pass: "eggwh1teEVERYWHERE{}", role: "Editor" },
+  "Keagan": { pass: "wkuj87", role: "Viewer" }
 };
 
+// compute SHA-256 hex
 async function sha256hex(s){
   const buf = new TextEncoder().encode(s);
   const hash = await crypto.subtle.digest('SHA-256', buf);
   return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-/* Precompute hashed values of stored plain (so we avoid storing plain in a visible place later) */
+// build hashed map at runtime
 const HASHED = {};
 (async ()=>{
-  for(const k of Object.keys(PLAIN)){
-    HASHED[k] = await sha256hex(PLAIN[k]);
+  for(const u of Object.keys(PLAIN)){
+    HASHED[u] = await sha256hex(PLAIN[u].pass);
   }
 })();
 
@@ -66,13 +69,15 @@ document.getElementById('loginBtn').addEventListener('click', async ()=>{
   const err = document.getElementById('err');
 
   if(!u || !p){ err.textContent = 'Fill both fields.'; return; }
-
   if(!(u in HASHED)){ err.textContent = 'Unknown user.'; return; }
 
   const entered = await sha256hex(p);
   if(entered === HASHED[u]){
-    // success
+    // login success: store username and role
     localStorage.setItem('dev_user', u);
+    localStorage.setItem('dev_role', PLAIN[u].role);
+    // ensure tasks storage exists (persistence)
+    if(!localStorage.getItem('mopy_tasks_v3')) localStorage.setItem('mopy_tasks_v3', JSON.stringify([]));
     location.href = 'dashboard.html';
   } else {
     err.textContent = 'Invalid password.';
