@@ -1,96 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mopy Dev Portal</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mopy Developmentz — Portal</title>
+<style>
+  :root{
+    --panel: rgba(255,255,255,0.06);
+    --accent: #4f8cff;
+    --accent-2: #1e66ff;
+    --muted: rgba(255,255,255,0.84);
+  }
+  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:linear-gradient(180deg,#04061a 0%, #071428 60%);color:white;display:flex;align-items:center;justify-content:center;}
+  /* soft nebula layers */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;
+    background:
+      radial-gradient(500px 260px at 12% 20%, rgba(79,140,255,0.06), transparent 12%),
+      radial-gradient(600px 320px at 84% 72%, rgba(100,60,150,0.04), transparent 12%);
+    mix-blend-mode:screen;opacity:0.95;
+  }
+  /* subtle planet */
+  .planet {
+    position:absolute;right:8%;top:8%;width:160px;height:160px;border-radius:50%;
+    background: radial-gradient(circle at 30% 30%, #ffcf8b, #d47f34 40%, #5a2a82 85%);
+    filter: blur(6px) saturate(0.9);opacity:0.12;pointer-events:none;
+  }
 
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            font-family: "Inter", sans-serif;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: radial-gradient(circle at 50% 20%, #081122, #000000 80%);
-            overflow: hidden;
-        }
-
-        .stars {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: fall 8s linear infinite;
-            opacity: 0.8;
-        }
-        @keyframes fall {
-            from { transform: translateY(-10vh); }
-            to { transform: translateY(110vh); }
-        }
-
-        .box {
-            padding: 40px 60px;
-            background: rgba(255,255,255,0.07);
-            border-radius: 18px;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 45px rgba(0,0,0,0.6);
-            animation: float 5s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%,100% { transform: translateY(0px); }
-            50% { transform: translateY(-12px); }
-        }
-
-        h1 {
-            font-size: 3rem;
-            text-shadow: 0 0 30px rgba(255,255,255,0.3);
-        }
-
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 14px 28px;
-            border-radius: 14px;
-            background: #1e66ff;
-            color: white;
-            font-weight: 600;
-            text-decoration: none;
-            font-size: 1.2rem;
-            box-shadow: 0 0 25px rgba(30,102,255,0.5);
-            transition: .2s;
-        }
-        .btn:hover {
-            background: #4c82ff;
-            box-shadow: 0 0 35px rgba(76,130,255,0.8);
-        }
-    </style>
+  .card{width:420px;max-width:92vw;padding:30px;border-radius:14px;background:var(--panel);backdrop-filter:blur(8px);box-shadow:0 12px 40px rgba(0,0,0,0.6);text-align:center;}
+  h1{font-size:26px;margin:0 0 6px 0;letter-spacing:0.4px}
+  p{margin:0 0 18px 0;opacity:0.95}
+  .cta{display:inline-block;padding:12px 20px;border-radius:12px;background:linear-gradient(180deg,var(--accent),var(--accent-2));color:white;font-weight:700;text-decoration:none;box-shadow:0 10px 30px rgba(30,102,255,0.18)}
+  .cta:hover{transform:translateY(-3px);transition:all .17s ease}
+  small{display:block;margin-top:14px;color:rgba(255,255,255,0.6)}
+  /* small procedural stars */
+  .star{position:fixed;border-radius:50%;background:white;opacity:0.85;filter:blur(.3px)}
+</style>
 </head>
-
 <body>
 
-<script>
-function stars(n){
-    for(let i=0;i<n;i++){
-        let s=document.createElement("div");
-        s.className="stars";
-        s.style.left=Math.random()*100+"vw";
-        s.style.top=Math.random()*100+"vh";
-        s.style.opacity=Math.random();
-        document.body.appendChild(s);
-    }
-}
-stars(120);
-</script>
+<div class="planet" aria-hidden="true"></div>
 
-<div class="box">
-    <h1>Mopy Developmentz™ Portal</h1>
-    <a href="login.html" class="btn">Enter Dashboard</a>
+<div class="card" role="main" aria-labelledby="title">
+  <h1 id="title">Mopy Developmentz™ — Dev Portal</h1>
+  <p>Internal team dashboard for tasks & collaboration. Secure for team use.</p>
+
+  <a class="cta" href="login.html">Go to Login</a>
+  <small>Use your developer credentials to log in.</small>
 </div>
+
+<script>
+/* decorative stars */
+(function addStars(n=70){
+  for(let i=0;i<n;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const size = (Math.random()*2.2)+0.6;
+    s.style.width = s.style.height = size+'px';
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.top  = Math.random()*100 + 'vh';
+    s.style.opacity = 0.12 + Math.random()*0.65;
+    document.body.appendChild(s);
+  }
+})();
+</script>
 
 </body>
 </html>
