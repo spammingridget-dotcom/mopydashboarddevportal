@@ -24,6 +24,7 @@
         animation: fall 8s linear infinite;
         opacity: 0.8;
     }
+
     @keyframes fall {
         from { transform: translateY(-10vh); }
         to { transform: translateY(110vh); }
@@ -97,7 +98,7 @@
 <body>
 
 <script>
-// stars
+// star background
 function stars(n){
     for(let i=0;i<n;i++){
         let s=document.createElement("div");
@@ -117,71 +118,77 @@ let users = ["mopy","astral_void","Etern","CX","St3amyEggroll"];
 let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
 
 function save(){
-    localStorage.setItem("tasks",JSON.stringify(tasks));
-    render();
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    render(); // <-- IMPORTANT FIX
 }
 
 function createTask(){
-    let title=document.getElementById("title").value.trim();
-    let assigned=[...document.getElementById("assigned").selectedOptions].map(o=>o.value);
+    let title = document.getElementById("title").value.trim();
+    let assigned = [...document.getElementById("assigned").selectedOptions].map(o => o.value);
 
     if(!title || assigned.length === 0) return;
 
-    // normal users: max 3 tasks per week
-    if(currentUser!=="mopy"){
-        let limit = tasks.filter(t=>t.creator===currentUser).length;
-        if(limit>=3){
-            alert("You reached 3 tasks/week limit.");
+    // weekly limit for normal users
+    if(currentUser !== "mopy"){
+        let limit = tasks.filter(t => t.creator === currentUser).length;
+        if(limit >= 3){
+            alert("You reached 3 tasks per week.");
             return;
         }
     }
 
     tasks.push({
-        id:Date.now(),
+        id: Date.now(),
         title,
-        creator:currentUser,
+        creator: currentUser,
         assigned,
-        completedBy:[]
+        completedBy: []
     });
 
-    save();
+    document.getElementById("title").value = "";
+    document.getElementById("assigned").selectedIndex = -1;
+
+    save(); // <--- FIX (triggers render)
 }
 
 function finishTask(id){
-    let t=tasks.find(x=>x.id===id);
-    if(!t.completedBy.includes(currentUser))
-        t.completedBy.push(currentUser);
+    let t = tasks.find(x => x.id === id);
 
-    // finish only if all assigned finished
-    if(t.completedBy.length===t.assigned.length){
-        tasks = tasks.filter(x=>x.id!==id);
+    if(!t.completedBy.includes(currentUser)){
+        t.completedBy.push(currentUser);
+    }
+
+    // complete only when ALL assigned finished
+    if(t.completedBy.length === t.assigned.length){
+        tasks = tasks.filter(x => x.id !== id);
     }
 
     save();
 }
 
 function render(){
-    let box=document.getElementById("tasks");
-    box.innerHTML="";
+    let box = document.getElementById("tasks");
+    box.innerHTML = "";
 
-    tasks.forEach(t=>{
-        let done=t.completedBy.length;
-        let total=t.assigned.length;
+    tasks.forEach(t => {
+        let done = t.completedBy.length;
+        let total = t.assigned.length;
 
-        let div=document.createElement("div");
-        div.className="task";
-        div.innerHTML=`
+        let div = document.createElement("div");
+        div.className = "task";
+
+        div.innerHTML = `
             <strong>${t.title}</strong><br>
-            Assigned to: ${t.assigned.join(", ")}<br>
+            Assigned: ${t.assigned.join(", ")}<br>
             Progress: ${done}/${total}<br>
         `;
 
         if(t.assigned.includes(currentUser)){
             if(!t.completedBy.includes(currentUser)){
-                let b=document.createElement("button");
-                b.className="btn";
-                b.textContent="Finish Task";
-                b.onclick=()=>finishTask(t.id);
+                let b = document.createElement("button");
+                b.className = "btn";
+                b.textContent = "Finish Task";
+                b.onclick = () => finishTask(t.id);
                 div.appendChild(b);
             }
         }
@@ -195,7 +202,9 @@ function render(){
     <a class="logout" href="login.html" onclick="localStorage.removeItem('user')">Logout</a>
     <h2>Welcome, <span id="userDisplay"></span></h2>
 
-    <script>document.getElementById("userDisplay").textContent=currentUser;</script>
+    <script>
+        document.getElementById("userDisplay").textContent = currentUser;
+    </script>
 
     <h3>Create Task</h3>
 
@@ -203,7 +212,7 @@ function render(){
 
     <select id="assigned" multiple size="5">
         <script>
-            users.forEach(u=>{
+            users.forEach(u => {
                 document.write(`<option value="${u}">${u}</option>`);
             });
         </script>
@@ -220,4 +229,3 @@ function render(){
 
 </body>
 </html>
-
