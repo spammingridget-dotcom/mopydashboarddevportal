@@ -1,66 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mopy Developmentz — Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Supabase + bcrypt not required here, app.js handles client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js" defer></script>
+    <title>Dashboard – Space Panel</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="planet" aria-hidden="true"></div>
 
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Mopy Developmentz — Dashboard</h1>
-        <div id="subtitle" class="muted small"></div>
-      </div>
-      <div>
-        <button class="btn ghost" id="logoutBtn">Logout</button>
-      </div>
-    </header>
+<body class="space-bg">
 
-    <section class="panel cols">
-      <!-- left: tasks -->
-      <div>
-        <h3>Open Tasks</h3>
-        <div id="tasksList" style="margin-top:12px;"></div>
-      </div>
+<div class="login-box">
+    <h1>🚀 Dashboard</h1>
 
-      <!-- right: create/edit -->
-      <aside>
-        <h3>Create Task</h3>
-        <div id="createForm"></div>
+    <p id="welcome"></p>
 
-        <div class="small-muted" style="margin-top:12px">
-          Rules:
-          <ul>
-            <li><strong>Owner</strong> can assign multiple users, edit/delete any task.</li>
-            <li><strong>Editors</strong> can create (max 3/week), edit/delete only their own tasks.</li>
-            <li><strong>Viewers</strong> can only view; cannot create, edit, delete, or finish.</li>
-            <li>Tasks finish when <em>all</em> assignees mark done. Progress shows X/Y.</li>
-          </ul>
-        </div>
-      </aside>
-    </section>
+    <button onclick="logout()">Log Out</button>
+</div>
 
-    <footer class="muted">Data saved in Supabase tables (tasks & users). This dashboard uses your Supabase project.</footer>
-  </div>
+<script>
+// load saved user
+const user = JSON.parse(localStorage.getItem("user"));
 
-  <script>
-    // initialize dashboard after app.js sets global client
-    document.addEventListener('DOMContentLoaded', () => {
-      if(!window.mopyApp) {
-        console.error('app.js not loaded');
-        return;
-      }
-      window.mopyApp.initDashboard();
-      document.getElementById('logoutBtn').addEventListener('click', window.mopyApp.logout);
-    });
-  </script>
+if (!user) {
+    window.location.href = "login.html";
+}
+
+// display user
+document.getElementById("welcome").innerText =
+    `Logged in as ${user.username} (${user.role})`;
+
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+}
+</script>
+
 </body>
 </html>
