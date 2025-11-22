@@ -2,88 +2,104 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Mopy Developmentz — Login</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-  :root{--panel:rgba(255,255,255,0.06);--accent:#4f8cff;--accent-2:#1e66ff}
-  html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif;background:
-    /* attempt to use uploaded local image first, then gradient fallback */
-    url('/mnt/data/35040c19-9acb-483f-89c9-865a64ccb1dc.png') center/cover no-repeat,
-    linear-gradient(180deg,#030419, #06122a);color:white;display:flex;align-items:center;justify-content:center;}
-  body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
-    radial-gradient(600px 260px at 12% 20%, rgba(79,140,255,0.05), transparent 12%),
-    radial-gradient(450px 220px at 82% 72%, rgba(100,60,150,0.03), transparent 12%);mix-blend-mode:screen;}
-  .wrap{width:380px;max-width:92vw;padding:28px;border-radius:12px;background:var(--panel);backdrop-filter:blur(8px);box-shadow:0 14px 40px rgba(0,0,0,0.6);text-align:center}
-  h2{margin:0 0 6px 0}
-  input{width:100%;padding:12px;border-radius:10px;border:none;margin-top:12px;background:rgba(255,255,255,0.03);color:white}
-  button{margin-top:14px;width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(180deg,var(--accent),var(--accent-2));color:white;font-weight:700;cursor:pointer}
-  .err{color:#ff8080;margin-top:10px;min-height:18px}
-  small{display:block;margin-top:10px;opacity:0.8}
+:root { --panel: rgba(255,255,255,0.06); --acc1:#4f8cff; --acc2:#1e66ff; }
+
+body {
+  margin:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: radial-gradient(circle at 20% 20%, #1e2450, #05060f 80%);
+  color:white;
+  font-family:Inter,Arial;
+}
+
+.wrap {
+  width:380px;
+  padding:28px;
+  border-radius:14px;
+  background:var(--panel);
+  backdrop-filter:blur(8px);
+  text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,0.5);
+}
+
+input {
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  background:rgba(255,255,255,0.05);
+  border:none;
+  border-radius:10px;
+  color:white;
+}
+
+button {
+  width:100%;
+  margin-top:16px;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(180deg,var(--acc1),var(--acc2));
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.err { color:#ff6b6b; margin-top:10px; min-height:20px; }
+small { opacity:0.7; display:block; margin-top:10px; }
 </style>
 </head>
+
 <body>
-
-<div class="wrap" role="form" aria-labelledby="h">
-  <h2 id="h">Developer Login</h2>
-
-  <input id="username" placeholder="Username" autocomplete="username" />
-  <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
-  <button id="loginBtn">Sign in</button>
-
-  <div class="err" id="err" aria-live="polite"></div>
-  <small>If you have issues, contact Mopy_UGC on Discord.</small>
+<div class="wrap">
+  <h2>Developer Login</h2>
+  <input id="username" placeholder="Username" />
+  <input id="password" type="password" placeholder="Password" />
+  <button id="loginBtn">Sign In</button>
+  <div class="err" id="err"></div>
+  <small>Issues? Contact Mopy_UGC</small>
 </div>
 
 <script>
-/*
-  Role-based users. Plain passwords are kept in PLAIN for demo hashing
-  (client-side). In production move auth to a backend.
-*/
-const PLAIN = {
-  "mopy": { pass: "mopy565329", role: "Owner" },
-  "astral_void": { pass: "ketchup_W1tHw@w", role: "Editor" },
-  "Etern": { pass: "w1thD43th@", role: "Editor" },
-  "CX": { pass: "#Mus1c1sSPOTIFY", role: "Editor" },
-  "St3amyEggroll": { pass: "eggwh1teEVERYWHERE{}", role: "Editor" },
-  "Keagan": { pass: "wkuj87", role: "Viewer" },
-  "Kumi" : { pass: "wohiu58", role : "Viewer"}
+const supabase = supabase.createClient(
+  "https://lzsopkzlifwjdhtxtrkt.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6c29wa3psaWZ3amRodHh0cmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4MjIzNzMsImV4cCI6MjA3OTM5ODM3M30.owsfr2JR_a5DH76TMvh1JX4atPGznmZz1ikQ60nwT8k"
+);
+
+/* Local credential table (pure demo) */
+const USERS = {
+  "mopy":      { pass: "mopy565329", role: "owner" },
+  "astral_void": { pass: "ketchup_W1tHw@w", role: "editor" },
+  "Etern":     { pass: "w1thD43th@", role: "editor" },
+  "CX":        { pass: "#Mus1c1sSPOTIFY", role: "editor" },
+  "St3amyEggroll": { pass: "eggwh1teEVERYWHERE{}", role: "editor" },
+  "Keagan":    { pass: "wkuj87", role: "viewer" }
 };
 
-// compute SHA-256 hex
-async function sha256hex(s){
-  const buf = new TextEncoder().encode(s);
-  const hash = await crypto.subtle.digest('SHA-256', buf);
-  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+document.getElementById("loginBtn").onclick = () => login();
+
+async function login() {
+  const u = username.value.trim();
+  const p = password.value.trim();
+  const err = document.getElementById("err");
+
+  if (!USERS[u]) return err.textContent = "Unknown user.";
+  if (p !== USERS[u].pass) return err.textContent = "Invalid password.";
+
+  // Save user+role
+  localStorage.setItem("dev_user", u);
+  localStorage.setItem("dev_role", USERS[u].role);
+
+  location.href = "dashboard.html";
 }
-
-// build hashed map at runtime
-const HASHED = {};
-(async ()=>{
-  for(const u of Object.keys(PLAIN)){
-    HASHED[u] = await sha256hex(PLAIN[u].pass);
-  }
-})();
-
-document.getElementById('loginBtn').addEventListener('click', async ()=>{
-  const u = document.getElementById('username').value.trim();
-  const p = document.getElementById('password').value;
-  const err = document.getElementById('err');
-
-  if(!u || !p){ err.textContent = 'Fill both fields.'; return; }
-  if(!(u in HASHED)){ err.textContent = 'Unknown user.'; return; }
-
-  const entered = await sha256hex(p);
-  if(entered === HASHED[u]){
-    // login success: store username and role
-    localStorage.setItem('dev_user', u);
-    localStorage.setItem('dev_role', PLAIN[u].role);
-    // ensure tasks storage exists (persistence)
-    if(!localStorage.getItem('mopy_tasks_v3')) localStorage.setItem('mopy_tasks_v3', JSON.stringify([]));
-    location.href = 'dashboard.html';
-  } else {
-    err.textContent = 'Invalid password.';
-  }
-});
 </script>
 </body>
 </html>
