@@ -1,67 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Task Manager</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mopy Developmentz — Login</title>
+  <link rel="stylesheet" href="style.css">
 
-    <!-- bcrypt.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.js"></script>
-
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- bcrypt in browser to verify stored bcrypt hashes -->
+  <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+  <!-- Supabase client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js" defer></script>
 </head>
+<body>
+  <main class="center-card">
+    <h2>Developer Login</h2>
 
-<body class="space-bg">
+    <label class="field">
+      <span>Username</span>
+      <input id="username" autocomplete="username" placeholder="username">
+    </label>
 
-<div class="login-box">
-    <h1>🚀 Task Manager Login</h1>
+    <label class="field">
+      <span>Password</span>
+      <input id="password" type="password" autocomplete="current-password" placeholder="password">
+    </label>
 
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
+    <div style="margin-top:12px;">
+      <button class="btn primary" id="signInBtn">Sign in</button>
+      <a class="btn ghost" href="index.html">Back</a>
+    </div>
 
-    <button onclick="login()">Log In</button>
+    <div id="error" class="err" role="alert" aria-live="polite"></div>
 
-    <p id="error" style="color:#ff5555;margin-top:10px;"></p>
-</div>
+    <p class="note">Contact <strong>Mopy_UGC</strong> on Discord if you need help.</p>
+  </main>
 
-<script>
-const supabase = supabase.createClient(
-    "https://lzsopkzlifwjdhtxtrkt.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx6c29wa3psaWZ3amRodHh0cmt0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM4MjIzNzMsImV4cCI6MjA3OTM5ODM3M30.owsfr2JR_a5DH76TMvh1JX4atPGznmZz1ikQ60nwT8k"
-);
+  <script>
+    // On load attach sign-in
+    document.getElementById('signInBtn').addEventListener('click', async () => {
+      const u = document.getElementById('username').value.trim();
+      const p = document.getElementById('password').value;
+      const err = document.getElementById('error');
+      err.textContent = '';
 
-async function login() {
-    const user = document.getElementById("username").value.trim();
-    const pass = document.getElementById("password").value;
+      if(!u || !p){ err.textContent = "Fill both fields."; return; }
 
-    const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("username", user)
-        .single();
-
-    if (error || !data) {
-        document.getElementById("error").innerText = "User not found.";
-        return;
-    }
-
-    const match = await bcrypt.compare(pass, data.password_hash);
-
-    if (!match) {
-        document.getElementById("error").innerText = "Incorrect password.";
-        return;
-    }
-
-    // Save session
-    localStorage.setItem("user", JSON.stringify({
-        id: data.id,
-        username: data.username,
-        role: data.role
-    }));
-
-    window.location.href = "dashboard.html";
-}
-</script>
-
+      try {
+        // use function from app.js
+        await window.mopyAuth.signInWithCredentials(u, p);
+        // redirect to dashboard
+        window.location.href = 'dashboard.html';
+      } catch(e) {
+        err.textContent = e.message || 'Login failed';
+      }
+    });
+  </script>
 </body>
 </html>
