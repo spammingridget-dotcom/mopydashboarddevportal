@@ -1,50 +1,35 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  color: white;
-  background: radial-gradient(circle at center, #0a0a1a, #000010, #000000);
-  background-image: url('https://media.istockphoto.com/id/157639696/photo/purple-space-stars.webp?s=2048x2048&w=is&k=20&c=GseomA62pyIiOTZBQWwRCEKA60Eg3IZQlKJXmJrpU5M=');
-  background-size: cover;
-  background-attachment: fixed;
+body.space-bg {
+    background: url("https://media.istockphoto.com/id/157639696/photo/purple-space-stars.jpg?s=612x612&w=0&k=20&c=Y4vLZjD4cI6mxtFd9DoHl2M7rXI5Cp8WYI4YxdpPpqw=") 
+    no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    color: white;
 }
 
-.center-box {
-  width: 400px;
-  margin: 120px auto;
-  padding: 30px;
-  background: rgba(0,0,20,0.8);
-  border: 1px solid #3f3fff;
-  border-radius: 10px;
-  text-align: center;
+.login-box {
+    width: 350px;
+    margin: 120px auto;
+    padding: 25px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+    text-align: center;
 }
 
 input {
-  width: 90%;
-  padding: 10px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 5px;
+    width: 90%;
+    padding: 12px;
+    margin: 10px;
+    border-radius: 8px;
+    border: none;
 }
 
 button {
-  width: 95%;
-  padding: 12px;
-  background: #4b4bff;
-  border: none;
-  color: white;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #6a6aff;
-}
-
-.task-box {
-  background: rgba(0,0,40,0.7);
-  padding: 15px;
-  margin: 15px;
-  border: 1px solid #4b4bff;
-  border-radius: 10px;
+    padding: 12px 20px;
+    width: 95%;
+    background: #7f5bff;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
 }
